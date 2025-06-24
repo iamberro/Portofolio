@@ -701,7 +701,7 @@ function initProjectsSection() {
                 'assets/images/sallary/user-setting.png',
                 'assets/images/sallary/history-setting.png',
             ],
-            demoUrl: 'http://debang.my.id/sallary',
+            demoUrl: 'aksesmaaf.html',
             codeUrl: 'codemaaf.html'
         },
         'Unit Usaha Koperasi 317': {
@@ -725,7 +725,7 @@ function initProjectsSection() {
                 'assets/images/koperasi/setting-user.png',
                 'assets/images/koperasi/setting-trx.png',
             ],
-            demoUrl: 'http://debang.my.id/koperasi',
+            demoUrl: 'aksesmaaf.html',
             codeUrl: 'codemaaf.html'
         },
         'Sales SNT View': {
@@ -738,7 +738,7 @@ function initProjectsSection() {
                 'assets/images/snt/Page1.png',
                 'assets/images/snt/Page2.png',
             ],
-            demoUrl: 'http://iamberro.github.io/snt/',
+            demoUrl: 'http://berro.my.id/snt/',
             codeUrl: 'codemaaf.html'
         }
     };
