@@ -3,6 +3,7 @@
 Selamat datang di dimensi digitalku! 🚀 Ini adalah source code untuk portfolio web pribadiku yang didesain dengan sentuhan retro-futuristik ala terminal tahun 80-an. Siap menjelajahi dunia data, coding, dan jaringan bersamaku?
 
 🌟 Fitur-Fitur Keren di Dalamnya:
+
 ⚡ Retro Terminal Vibes: Nikmati tampilan seperti monitor CRT jadul lengkap dengan efek scanlines dan glow neon yang memukau!
 👤 Profil Interaktif: Kenali aku lebih dekat dengan informasi profil yang disajikan layaknya command line interface yang dinamis.
 📂 Koleksi Proyek: Intip berbagai proyek yang sudah kubuat, mulai dari dashboard web interaktif, otomasi data Excel, hingga aplikasi tracking keuangan. Filter dan cari proyek favoritmu!
