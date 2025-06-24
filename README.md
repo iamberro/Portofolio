@@ -5,12 +5,19 @@ Selamat datang di dimensi digitalku! 🚀 Ini adalah source code untuk portfolio
 🌟 Fitur-Fitur Keren di Dalamnya:
 
 ⚡ Retro Terminal Vibes: Nikmati tampilan seperti monitor CRT jadul lengkap dengan efek scanlines dan glow neon yang memukau!
+
 👤 Profil Interaktif: Kenali aku lebih dekat dengan informasi profil yang disajikan layaknya command line interface yang dinamis.
+
 📂 Koleksi Proyek: Intip berbagai proyek yang sudah kubuat, mulai dari dashboard web interaktif, otomasi data Excel, hingga aplikasi tracking keuangan. Filter dan cari proyek favoritmu!
+
 🏆 Prestasi & Sertifikasi: Lihat pencapaian dan sertifikat yang kudapatkan, mungkin ada inspirasi di sana!
+
 💡 Keterampilan Komplit: Penasaran dengan skillset ku? Ada daftar bahasa pemrograman, frameworks, dan tools yang kuasai, ditampilkan dengan progres bar yang ciamik!
+
 📧 Kontak Mudah: Mau ngajak kolaborasi atau sekadar say hi? Langsung kirim pesan lewat form kontak yang terintegrasi dengan WhatsApp-ku!
+
 🎵 Background Music: Rasakan nuansa lo-fi dan synthwave yang menemanimu menjelajah portofolio ini.
+
 🥚 Easter Egg Tersembunyi: Coba temukan secret command di dalamnya. Mungkin ada kejutan! 😉
 
 💻 Teknologi yang Digunakan:
