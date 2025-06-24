@@ -680,7 +680,7 @@ function initProjectsSection() {
             images: [
                 'assets/images/sales/dashboard.png',
             ],
-            demoUrl: 'https://docs.google.com/spreadsheets/d/1oOXCgLSf6V_OOR700lDdNjtD5r2JHCbeJUJZ4bxTW-g/edit?usp=sharing',
+            demoUrl: 'aksesmaaf.html',
             codeUrl: 'codemaaf.html'
         },
         'Tracking Sallary': {
@@ -738,7 +738,7 @@ function initProjectsSection() {
                 'assets/images/snt/Page1.png',
                 'assets/images/snt/Page2.png',
             ],
-            demoUrl: 'http://berro.my.id/',
+            demoUrl: 'http://iamberro.github.io/snt/',
             codeUrl: 'codemaaf.html'
         }
     };
