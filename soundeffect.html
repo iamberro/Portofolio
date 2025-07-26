@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundboard 317</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-color: #16213e;
+            --font-color: #e94560;
+            --text-color: #dcdcdc;
+            --green: #2ecc71;
+            --red: #e74c3c;
+            --blue: #3498db;
+            --purple: #9b59b6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            padding-bottom: 80px; /* Memberi ruang untuk footer */
+        }
+
+        .main-title {
+            color: var(--font-color);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px var(--font-color);
+        }
+
+        .category-group {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px auto;
+            max-width: 900px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            color: var(--font-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--font-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .sound-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+        }
+
+        .sound-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sound-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .btn-correct { background: linear-gradient(45deg, var(--green), #58d68d); }
+        .btn-wrong { background: linear-gradient(45deg, var(--red), #f1948a); }
+        .btn-effect { background: linear-gradient(45deg, var(--blue), #5dade2); }
+        .btn-music { background: linear-gradient(45deg, var(--purple), #af7ac5); }
+        .btn-stop { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+
+        .sound-btn.playing {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px var(--font-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* === STYLE BARU UNTUK FOOTER === */
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="main-title">SOUNDBOARD 317</h1>
+    <p>Klik untuk play/pause. Tombol yang aktif akan menyala.</p>
+
+    <div class="category-group">
+        <div class="button-grid">
+            <button class="sound-btn btn-stop" data-sound="stop">
+                <i class="fa-solid fa-stop"></i> STOP ALL
+            </button>
+        </div>
+    </div>
+
+    <div class="category-group">
+        <h2 class="category-title">Respon Kuis</h2>
+        <div class="button-grid">
+            <button class="sound-btn btn-wrong" data-sound="jawaban_salah.mp3">
+                <i class="fa-solid fa-xmark"></i> Jawaban Salah
+            </button>
+            <button class="sound-btn btn-correct" data-sound="jawaban_benar.mp3">
+                <i class="fa-solid fa-check"></i> Jawaban Benar
+            </button>
+        </div>
+    </div>
+    
+    <div class="category-group">
+        <h2 class="category-title">Efek Suara</h2>
+        <div class="button-grid">
+            <button class="sound-btn btn-effect" data-sound="tepuk_tangan.mp3">
+                <i class="fa-solid fa-hands-clapping"></i> Tepuk Tangan
+            </button>
+            <button class="sound-btn btn-effect" data-sound="drum_roll.mp3">
+                <i class="fa-solid fa-drum"></i> Drum Roll
+            </button>
+        </div>
+    </div>
+    
+    <div class="category-group">
+        <h2 class="category-title">Musik</h2>
+        <div class="button-grid">
+            <button class="sound-btn btn-music" data-sound="are_champion.mp3">
+                <i class="fa-solid fa-trophy"></i> We Are the Champions
+            </button>
+            <button class="sound-btn btn-music" data-sound="final_countdown.mp3">
+                <i class="fa-solid fa-rocket"></i> The Final Countdown
+            </button>
+        </div>
+    </div>
+
+    <div class="category-group">
+        <h2 class="category-title">Music Full</h2>
+        <div class="button-grid">
+            <button class="sound-btn btn-music" data-sound="s_u_t_jamrud.mp3">
+                <i class="fa-solid fa-music"></i> Ulang Tahun - Jamrud
+            </button>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <div class="footer">
+        Copyright by Berro @sir.berro
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        let currentPlayingButton = null;
+
+        document.querySelectorAll('.sound-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const soundFile = this.dataset.sound;
+
+                if (soundFile === 'stop') {
+                    if (currentPlayingButton) {
+                        audioPlayer.pause();
+                        audioPlayer.currentTime = 0;
+                        currentPlayingButton.classList.remove('playing');
+                        currentPlayingButton = null;
+                    }
+                    return;
+                }
+
+                if (this === currentPlayingButton) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
+                    this.classList.remove('playing');
+                    currentPlayingButton = null;
+                } else {
+                    if (currentPlayingButton) {
+                        currentPlayingButton.classList.remove('playing');
+                    }
+                    
+                    audioPlayer.src = 'audio/' + soundFile;
+                    audioPlayer.play();
+                    
+                    this.classList.add('playing');
+                    currentPlayingButton = this;
+                }
+            });
+        });
+        
+        audioPlayer.addEventListener('ended', function() {
+            if (currentPlayingButton) {
+                currentPlayingButton.classList.remove('playing');
+                currentPlayingButton = null;
+            }
+        });
+    </script>
+</body>
+</html>
