@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Kuis 317</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a2e; --card-color: #16213e; --font-color: #e94560;
+            --text-color: #dcdcdc; --input-bg-color: #2a2a4e; --button-color: #03dac6;
+            --button-text-color: #1a1a2e; --shadow-color: rgba(3, 218, 198, 0.2);
+            --blue: #54a0ff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); color: var(--text-color); padding: 20px; min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .container { width: 100%; max-width: 800px; margin: 20px auto; background-color: var(--card-color); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--shadow-color); border: 1px solid rgba(255, 255, 255, 0.1); }
+        h1 { color: var(--font-color); text-align: center; margin-bottom: 40px; font-weight: 700; text-shadow: 0 0 10px var(--font-color); }
+        .form-group { margin-bottom: 25px; position: relative; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--button-color); }
+        input, select, textarea { width: 100%; padding: 14px; background-color: var(--input-bg-color); border: 2px solid transparent; border-radius: 8px; color: var(--text-color); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--font-color); box-shadow: 0 0 10px var(--shadow-color); }
+        textarea { resize: vertical; min-height: 80px; }
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .dynamic-container { margin-top: 20px; border-left: 3px solid var(--font-color); padding-left: 20px; }
+        .sub-group { margin-bottom: 15px; background-color: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 8px; animation: fadeInSlideUp 0.5s ease forwards; }
+        .bank-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+        .round-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
+        .btn { padding: 10px 20px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; color: white; transition: all 0.3s ease; }
+        .btn-save { background-color: var(--blue); }
+        .btn-load { background-color: var(--font-color); }
+        button[type="submit"] { width: 100%; padding: 15px; font-size: 1.2rem; font-weight: 700; color: var(--button-text-color); background: var(--button-color); border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; margin-top: 20px; transition: all 0.3s ease; }
+        button[type="submit"]:hover { transform: translateY(-3px); box-shadow: 0 7px 20px var(--shadow-color); filter: brightness(1.1); }
+        .question-input-container { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #3a3a5e; display: flex; flex-direction: column; gap: 10px; }
+        .setup-actions { display: flex; gap: 15px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--font-color); }
+        /* CSS untuk upload logo */
+        .team-input-grid { display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: center; }
+        input[type="file"] { display: none; }
+        .file-input-label { background-color: #3a3a5e; color: white; padding: 12px 15px; border-radius: 5px; cursor: pointer; text-align: center; transition: background-color 0.3s ease; white-space: nowrap; }
+        .file-input-label:hover { background-color: #4a4a6e; }
+        .logo-preview-wrapper { display: flex; align-items: center; gap: 10px; }
+        .logo-preview { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background-color: #2a2a4e; border: 2px solid #3a3a5e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Setup Permainan Kuis</h1>
+        
+        <div class="setup-actions">
+            <button type="button" id="saveSetupBtn" class="btn btn-save">Simpan Pengaturan</button>
+            <button type="button" id="loadSetupBtn" class="btn btn-load">Muat Pengaturan</button>
+            <input type="file" id="loadSetupInput" accept=".json" style="display: none;">
+        </div>
+
+        <form id="setupForm">
+            <div class="form-group">
+                <label for="gameTitle">Nama Acara</label>
+                <input type="text" id="gameTitle" placeholder="Contoh: Kuis Spektakuler 2025" required>
+            </div>
+            <div class="form-group">
+                <label for="numTeams">Jumlah Tim</label>
+                <input type="number" id="numTeams" min="1" max="10" required>
+            </div>
+            <div id="teamsContainer" class="dynamic-container"></div>
+            
+            <div class="form-group">
+                <label for="numBanks">Jumlah Bank Soal Wajib</label>
+                <input type="number" id="numBanks" min="1" max="10" placeholder="Untuk babak wajib" required>
+            </div>
+            <div id="banksContainer" class="dynamic-container"></div>
+
+            <div class="form-group">
+                <label for="numRounds">Jumlah Ronde</label>
+                <input type="number" id="numRounds" min="1" max="10" required>
+            </div>
+            <div id="roundsContainer" class="dynamic-container"></div>
+            
+            <button type="submit">Mulai Permainan</button>
+        </form>
+    </div>
+
+    <script>
+        const gameTitleInput = document.getElementById('gameTitle');
+        const numTeamsInput = document.getElementById('numTeams');
+        const numRoundsInput = document.getElementById('numRounds');
+        const numBanksInput = document.getElementById('numBanks');
+        const teamsContainer = document.getElementById('teamsContainer');
+        const roundsContainer = document.getElementById('roundsContainer');
+        const banksContainer = document.getElementById('banksContainer');
+
+        numTeamsInput.addEventListener('input', generateTeamInputs);
+        numRoundsInput.addEventListener('input', generateRoundInputs);
+        numBanksInput.addEventListener('input', generateBankInputs);
+        document.getElementById('setupForm').addEventListener('submit', startGame);
+
+        document.getElementById('saveSetupBtn').addEventListener('click', saveSetup);
+        document.getElementById('loadSetupBtn').addEventListener('click', () => document.getElementById('loadSetupInput').click());
+        document.getElementById('loadSetupInput').addEventListener('change', loadSetup);
+
+        function generateTeamInputs() {
+            teamsContainer.innerHTML = '';
+            const count = parseInt(numTeamsInput.value);
+            if (isNaN(count) || count <= 0) return;
+            for (let i = 1; i <= count; i++) {
+                teamsContainer.innerHTML += `
+                    <div class="form-group sub-group">
+                        <label>Tim ${i}</label>
+                        <div class="team-input-grid">
+                            <input type="text" id="teamName${i}" class="team-name-input" placeholder="Nama Tim ${i}" required>
+                            <div class="logo-preview-wrapper">
+                                <img src="" alt="Logo" class="logo-preview" id="logoPreview${i}">
+                                <label for="teamLogo${i}" class="file-input-label">Pilih Logo</label>
+                                <input type="file" id="teamLogo${i}" class="team-logo-input" data-team-index="${i}" accept="image/*">
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            document.querySelectorAll('.team-logo-input').forEach(input => {
+                input.addEventListener('change', previewLogo);
+            });
+        }
+
+        function generateBankInputs() {
+            banksContainer.innerHTML = '';
+            const count = parseInt(numBanksInput.value);
+            if (isNaN(count) || count <= 0) return;
+            for (let i = 1; i <= count; i++) {
+                const bankHtml = `
+                    <div class="form-group sub-group">
+                        <label>Pengaturan Bank Soal Wajib ${i}</label>
+                        <div class="bank-input-group">
+                            <input type="text" id="bankName${i}" class="bank-name-input" placeholder="Nama Bank Soal ${i}" value="Bank Soal ${i}" required>
+                            <input type="number" id="bankQuestions${i}" data-bank-index="${i}" class="bank-questions-input" placeholder="Jumlah Soal" min="1" required>
+                        </div>
+                        <div class="question-input-container" id="bank${i}QuestionContainer"></div>
+                    </div>`;
+                banksContainer.insertAdjacentHTML('beforeend', bankHtml);
+            }
+            document.querySelectorAll('.bank-questions-input').forEach(input => {
+                input.addEventListener('input', (e) => generateQuestionInputs(e, 'bank'));
+            });
+        }
+        
+        function generateRoundInputs() {
+            roundsContainer.innerHTML = '';
+            const count = parseInt(numRoundsInput.value);
+            if (isNaN(count) || count <= 0) return;
+            for (let i = 1; i <= count; i++) {
+                const roundHtml = `
+                    <div class="form-group sub-group">
+                        <label>Aturan Ronde ${i}</label>
+                        <select id="round${i}Type" data-round-index="${i}" class="round-type-input" style="margin-bottom: 10px;">
+                            <option value="rebutan">Babak Rebutan</option>
+                            <option value="wajib">Babak Wajib</option>
+                        </select>
+                        <div class="round-inputs">
+                            <input type="number" id="round${i}Questions" data-round-index="${i}" class="round-questions-input" placeholder="Jml Soal" required>
+                            <input type="number" id="round${i}Timer" class="round-timer-input" placeholder="Waktu/soal (detik)" required>
+                            <input type="number" id="round${i}Correct" class="round-correct-input" placeholder="Poin Benar (+)" required>
+                            <input type="number" id="round${i}Incorrect" class="round-incorrect-input" placeholder="Poin Salah (-)" required>
+                        </div>
+                        <div class="question-input-container" id="round${i}QuestionContainer"></div>
+                    </div>`;
+                roundsContainer.insertAdjacentHTML('beforeend', roundHtml);
+            }
+            document.querySelectorAll('.round-type-input').forEach(sel => sel.addEventListener('change', handleRoundTypeChange));
+            document.querySelectorAll('.round-questions-input').forEach(input => input.addEventListener('input', (e) => generateQuestionInputs(e, 'round')));
+            document.querySelectorAll('.round-type-input').forEach(sel => handleRoundTypeChange({ target: sel }));
+        }
+
+        function handleRoundTypeChange(event) {
+            const select = event.target;
+            const roundIndex = select.dataset.roundIndex;
+            const container = document.getElementById(`round${roundIndex}QuestionContainer`);
+            const questionInput = document.getElementById(`round${roundIndex}Questions`);
+            if (select.value === 'wajib') {
+                container.style.display = 'none';
+                questionInput.placeholder = "Jml Soal/Tim (dari Bank)";
+                questionInput.disabled = true;
+                questionInput.required = false;
+                questionInput.value = '';
+            } else {
+                container.style.display = 'flex';
+                questionInput.placeholder = "Jml Soal Rebutan";
+                questionInput.disabled = false;
+                questionInput.required = true;
+            }
+        }
+
+        function generateQuestionInputs(event, prefix) {
+            const index = event.target.dataset[`${prefix}Index`];
+            const questionCount = parseInt(event.target.value);
+            const container = document.getElementById(`${prefix}${index}QuestionContainer`);
+            container.innerHTML = '';
+            if (isNaN(questionCount) || questionCount <= 0) return;
+            for (let i = 1; i <= questionCount; i++) {
+                container.innerHTML += `
+                    <div class="form-group">
+                        <label for="${prefix}${index}Q${i}">Teks Soal No. ${i}</label>
+                        <textarea id="${prefix}${index}Q${i}" placeholder="Ketik pertanyaan di sini..."></textarea>
+                    </div>
+                `;
+            }
+        }
+        
+        function previewLogo(event) {
+            const input = event.target;
+            const teamIndex = input.dataset.teamIndex;
+            const preview = document.getElementById(`logoPreview${teamIndex}`);
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.dataset.base64 = e.target.result; 
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function startGame(event) {
+            event.preventDefault();
+            
+            try {
+                const logoPromises = [];
+                const numTeamsValue = parseInt(numTeamsInput.value);
+                for (let i = 1; i <= numTeamsValue; i++) {
+                    const preview = document.getElementById(`logoPreview${i}`);
+                    const input = document.getElementById(`teamLogo${i}`);
+                    const file = input.files[0];
+
+                    if (file) {
+                        logoPromises.push(readFileAsDataURL(file));
+                    } else if (preview.dataset.base64 && preview.dataset.base64 !== 'null') {
+                        logoPromises.push(Promise.resolve(preview.dataset.base64));
+                    } else {
+                        logoPromises.push(Promise.resolve(null));
+                    }
+                }
+                const logos = await Promise.all(logoPromises);
+
+                const newGameData = {
+                    gameTitle: gameTitleInput.value,
+                    currentRound: 1,
+                    status: 'playing',
+                    liveQuestion: null,
+                    teams: [],
+                    rounds: [],
+                    questionBanks: []
+                };
+
+                const numBanks = parseInt(numBanksInput.value);
+                for (let i = 1; i <= numBanks; i++) {
+                    const numQuestionsInBank = parseInt(document.getElementById(`bankQuestions${i}`).value);
+                    const questions = [];
+                    for (let q = 1; q <= numQuestionsInBank; q++) {
+                        const questionText = document.getElementById(`bank${i}Q${q}`).value;
+                        questions.push({ text: questionText });
+                    }
+                    newGameData.questionBanks.push({
+                        id: `bank_${i}`,
+                        name: document.getElementById(`bankName${i}`).value,
+                        questions: questions
+                    });
+                }
+
+                const numRounds = parseInt(numRoundsInput.value);
+                for (let i = 1; i <= numRounds; i++) {
+                    const roundType = document.getElementById(`round${i}Type`).value;
+                    const roundData = {
+                        roundNumber: i,
+                        type: roundType,
+                        timer: parseInt(document.getElementById(`round${i}Timer`).value),
+                        pointsCorrect: parseInt(document.getElementById(`round${i}Correct`).value),
+                        pointsIncorrect: -Math.abs(parseInt(document.getElementById(`round${i}Incorrect`).value) || 0)
+                    };
+
+                    if (roundType === 'rebutan') {
+                        const numQuestions = parseInt(document.getElementById(`round${i}Questions`).value);
+                        roundData.numQuestions = numQuestions;
+                        roundData.questions = [];
+                        for (let q = 1; q <= numQuestions; q++) {
+                            const questionText = document.getElementById(`round${i}Q${q}`).value;
+                            roundData.questions.push({ text: questionText });
+                        }
+                    } else {
+                        roundData.numQuestions = 0;
+                    }
+                    newGameData.rounds.push(roundData);
+                }
+                
+                for (let i = 1; i <= numTeamsValue; i++) {
+                    const teamAnswers = {};
+                    const bankAssignments = {};
+                    newGameData.rounds.forEach(round => {
+                        const roundKey = `round${round.roundNumber}`;
+                        bankAssignments[roundKey] = null; 
+                        teamAnswers[roundKey] = Array(50).fill('-');
+                    });
+                    newGameData.teams.push({
+                        id: `tim_${i}`,
+                        name: document.getElementById(`teamName${i}`).value,
+                        logo: logos[i - 1],
+                        score: 0,
+                        answers: teamAnswers,
+                        bankAssignments: bankAssignments
+                    });
+                }
+
+                localStorage.setItem('quizGameData', JSON.stringify(newGameData));
+                alert('Setup berhasil! Game siap dimulai.');
+                window.open('leaderboard.html', '_blank');
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                alert("Terjadi kesalahan saat memulai permainan. Pastikan semua kolom yang wajib sudah terisi.\n\nError: " + error.message);
+                console.error(error);
+            }
+        }
+
+        async function saveSetup() {
+            try {
+                const logoPromises = [];
+                const numTeamsValue = parseInt(numTeamsInput.value);
+                for (let i = 1; i <= numTeamsValue; i++) {
+                     const preview = document.getElementById(`logoPreview${i}`);
+                    const input = document.getElementById(`teamLogo${i}`);
+                    const file = input.files[0];
+
+                    if (file) {
+                        logoPromises.push(readFileAsDataURL(file));
+                    } else if (preview.dataset.base64 && preview.dataset.base64 !== 'null') {
+                        logoPromises.push(Promise.resolve(preview.dataset.base64));
+                    } else {
+                        logoPromises.push(Promise.resolve(null));
+                    }
+                }
+                const logos = await Promise.all(logoPromises);
+
+                const setupData = {
+                    gameTitle: gameTitleInput.value,
+                    numTeams: numTeamsInput.value,
+                    numBanks: numBanksInput.value,
+                    numRounds: numRoundsInput.value,
+                    teams: [],
+                    banks: [],
+                    rounds: []
+                };
+
+                for (let i = 1; i <= setupData.numTeams; i++) {
+                    setupData.teams.push({ 
+                        name: document.getElementById(`teamName${i}`).value,
+                        logo: logos[i - 1]
+                    });
+                }
+                
+                for (let i = 1; i <= setupData.numBanks; i++) {
+                    const bank = {
+                        name: document.getElementById(`bankName${i}`).value,
+                        numQuestions: document.getElementById(`bankQuestions${i}`).value,
+                        questions: []
+                    };
+                    for (let q = 1; q <= bank.numQuestions; q++) {
+                        bank.questions.push(document.getElementById(`bank${i}Q${q}`).value);
+                    }
+                    setupData.banks.push(bank);
+                }
+
+                for (let i = 1; i <= setupData.numRounds; i++) {
+                    const round = {
+                        type: document.getElementById(`round${i}Type`).value,
+                        timer: document.getElementById(`round${i}Timer`).value,
+                        correct: document.getElementById(`round${i}Correct`).value,
+                        incorrect: document.getElementById(`round${i}Incorrect`).value,
+                        numQuestions: document.getElementById(`round${i}Questions`).value,
+                        questions: []
+                    };
+                    if (round.type === 'rebutan') {
+                        for (let q = 1; q <= round.numQuestions; q++) {
+                            round.questions.push(document.getElementById(`round${i}Q${q}`).value);
+                        }
+                    }
+                    setupData.rounds.push(round);
+                }
+                
+                const dataStr = JSON.stringify(setupData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = `pengaturan-kuis-${setupData.gameTitle.replace(/\s/g, '_') || 'tanpa_judul'}.json`;
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                alert('Pengaturan telah disimpan!');
+
+            } catch (error) {
+                 alert('Gagal menyimpan pengaturan: ' + error.message);
+            }
+        }
+
+        function loadSetup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    teamsContainer.innerHTML = '';
+                    banksContainer.innerHTML = '';
+                    roundsContainer.innerHTML = '';
+
+                    gameTitleInput.value = data.gameTitle || '';
+                    numTeamsInput.value = data.numTeams || '';
+                    numBanksInput.value = data.numBanks || '';
+                    numRoundsInput.value = data.numRounds || '';
+
+                    generateTeamInputs();
+                    generateBankInputs();
+                    generateRoundInputs();
+
+                    data.teams.forEach((team, i) => {
+                        const teamIndex = i + 1;
+                        document.getElementById(`teamName${teamIndex}`).value = team.name;
+                        const preview = document.getElementById(`logoPreview${teamIndex}`);
+                        if (team.logo) {
+                            preview.src = team.logo;
+                            preview.dataset.base64 = team.logo;
+                        }
+                    });
+
+                    data.banks.forEach((bank, i) => {
+                        const bankIndex = i + 1;
+                        document.getElementById(`bankName${bankIndex}`).value = bank.name;
+                        const bankQuestionsInput = document.getElementById(`bankQuestions${bankIndex}`);
+                        bankQuestionsInput.value = bank.numQuestions;
+                        generateQuestionInputs({ target: bankQuestionsInput }, 'bank');
+                        bank.questions.forEach((qText, qIndex) => {
+                            document.getElementById(`bank${bankIndex}Q${qIndex + 1}`).value = qText;
+                        });
+                    });
+
+                    data.rounds.forEach((round, i) => {
+                        const roundIndex = i + 1;
+                        const roundTypeSelect = document.getElementById(`round${roundIndex}Type`);
+                        roundTypeSelect.value = round.type;
+                        handleRoundTypeChange({ target: roundTypeSelect });
+
+                        document.getElementById(`round${roundIndex}Timer`).value = round.timer;
+                        document.getElementById(`round${roundIndex}Correct`).value = round.correct;
+                        document.getElementById(`round${roundIndex}Incorrect`).value = round.incorrect;
+                        
+                        if (round.type === 'rebutan') {
+                            const roundQuestionsInput = document.getElementById(`round${roundIndex}Questions`);
+                            roundQuestionsInput.value = round.numQuestions;
+                            generateQuestionInputs({ target: roundQuestionsInput }, 'round');
+                            round.questions.forEach((qText, qIndex) => {
+                                document.getElementById(`round${roundIndex}Q${qIndex + 1}`).value = qText;
+                            });
+                        }
+                    });
+                    
+                    alert('Pengaturan berhasil dimuat!');
+                } catch (error) {
+                    alert('Gagal memuat file. Pastikan file adalah format .json yang benar.\n\nError: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin Kuis 317</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #1a1a2e; --card-color: #16213e; --font-color: #e94560; --text-color: #dcdcdc;
+            --green: #00ff7f; --red: #ff4757; --yellow: #feca57; --blue: #54a0ff;
+            --shadow-color: rgba(233, 69, 96, 0.25); --dark-shadow: rgba(0, 0, 0, 0.5);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+        .container { max-width: 800px; margin: 0 auto; flex-grow: 1; }
+        .header, .control-box { background-color: var(--card-color); padding: 25px 30px; border-radius: 16px; margin-bottom: 25px; text-align: center; border: 1px solid #2a2a4e; box-shadow: 0 8px 32px 0 var(--dark-shadow); transition: all 0.3s ease-in-out; }
+        .control-box:hover { border-color: var(--font-color); box-shadow: 0 0 20px var(--shadow-color); }
+        h1 { color: var(--font-color); margin: 0 0 10px 0; font-size: 2.5rem; font-weight: 700; text-shadow: 0 0 5px var(--shadow-color), 0 0 10px var(--shadow-color); }
+        h2 { color: var(--font-color); margin: 0 0 20px 0; font-size: 1.8rem; border-bottom: 2px solid #2a2a4e; padding-bottom: 15px; }
+        h2 .fa-solid { margin-right: 10px; }
+        p#roundInfo { font-size: 1.2rem; margin: 0; color: var(--blue); font-weight: 600; }
+        p#wajibInfo { font-size: 1.1rem; color: var(--yellow); margin-bottom: 15px; font-weight: 600; }
+        .btn { padding: 12px 24px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; color: white; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        .btn:active { transform: translateY(0px); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .btn .fa-solid { font-size: 1.1em; }
+        .btn-next-round-top { background: linear-gradient(45deg, var(--font-color), #ff7e5f); font-size: 0.9rem; }
+        .btn-reset { background: linear-gradient(45deg, var(--yellow), #ffc312); }
+        .btn-wajib-correct, .btn-admin-correct { background: linear-gradient(45deg, var(--green), #2ed573); }
+        .btn-wajib-wrong, .btn-admin-wrong { background: linear-gradient(45deg, var(--red), #ff6b81); }
+        .question-nav-buttons button { background: linear-gradient(45deg, var(--blue), #74b9ff); flex-grow: 1; }
+        input[type="number"], select { padding: 12px; background-color: #2a2a4e; border: 2px solid #3a3a5e; border-radius: 8px; color: var(--text-color); font-size: 1.4rem; text-align: center; transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        input[type="number"] { width: 120px; }
+        input[type="number"]:focus, select:focus { border-color: var(--font-color); box-shadow: 0 0 10px var(--shadow-color); outline: none; }
+        .header-top { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .question-control { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 25px 0; flex-wrap: wrap; }
+        .wajib-controls { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .wajib-actions { display: flex; gap: 15px; width: 100%; }
+        .wajib-actions button { flex-grow: 1; padding: 15px; font-size: 1.1rem; }
+        .question-nav-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; }
+        #rebutanTeamsContainer { display: flex; flex-direction: column; gap: 15px; }
+        .admin-team-card { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-radius: 12px; transition: all 0.4s ease-in-out; border-left: 5px solid transparent; }
+        .admin-team-info { font-size: 1.4rem; font-weight: 600; }
+        .default-state { background-color: #2c3e50; border-left-color: var(--blue); }
+        .answered-correct { background-color: var(--green) !important; color: #1a1a2e !important; border-left-color: #fff !important; box-shadow: 0 0 20px var(--green); }
+        .answered-wrong { background-color: var(--red) !important; color: #fff !important; border-left-color: #fff !important; box-shadow: 0 0 20px var(--red); }
+        .admin-buttons button { margin-left: 10px; padding: 8px 16px; font-size: 0.9rem; }
+        .footer { text-align: center; margin-top: 30px; padding: 20px; color: rgba(220, 220, 220, 0.5); font-size: 0.9em; font-weight: 400; }
+        .hidden { display: none !important; }
+        .manual-score-controls { display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .manual-item { margin-bottom: 10px; }
+        #manualTeamSelect { flex-grow: 1; max-width: 300px; padding: 12px; background-color: #2a2a4e; border: 2px solid #3a3a5e; border-radius: 8px; color: var(--text-color); font-size: 1.1rem; }
+        #manualScoreInput { width: 100px; font-size: 1.1rem; }
+        .manual-score-buttons { display: flex; gap: 10px; }
+        .question-indicator-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            max-width: 100%;
+        }
+        .q-indicator {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            background-color: #4a4a6e;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .q-indicator.correct {
+            background-color: var(--green);
+            color: var(--bg-color);
+        }
+        .q-indicator.wrong {
+            background-color: var(--red);
+        }
+        .q-indicator.current {
+            border-color: var(--yellow);
+            transform: scale(1.15);
+            box-shadow: 0 0 15px var(--yellow);
+        }
+        .bank-assignment-container { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .bank-assignment-row { display: grid; grid-template-columns: 1fr 2fr; align-items: center; gap: 10px; text-align: left; }
+        .bank-assignment-row label { font-weight: 600; font-size: 1.1rem; }
+        .bank-assignment-row select { font-size: 1rem; text-align: left; }
+        .live-question-controls { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--blue); display: flex; justify-content: center; gap: 15px; }
+        .btn-show-question { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+        .btn-start-timer { background: linear-gradient(45deg, var(--yellow), #ffc312); color: #1a1a2e;}
+        .btn-hide-question { background: linear-gradient(45deg, #c0392b, #e74c3c); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="gameTitle"></h1>
+            <div class="header-top">
+                <button id="prevRoundBtn" class="btn btn-next-round-top"><i class="fa-solid fa-backward"></i> Previous Round</button>
+                <p id="roundInfo"></p>
+                <button id="nextRoundBtn" class="btn btn-next-round-top">Next Round <i class="fa-solid fa-forward"></i></button>
+            </div>
+        </div>
+        
+        <div id="manualScoreView" class="control-box">
+            <h2><i class="fa-solid fa-edit"></i> Penyesuaian Skor Manual</h2>
+            <div class="manual-score-controls">
+                <select id="manualTeamSelect" class="manual-item"></select>
+                <input type="number" id="manualScoreInput" placeholder="Poin" class="manual-item">
+                <div class="manual-score-buttons manual-item">
+                    <button id="addScoreBtn" class="btn btn-wajib-correct"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    <button id="subtractScoreBtn" class="btn btn-wajib-wrong"><i class="fa-solid fa-minus"></i> Kurang</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bankAssignmentView" class="control-box hidden">
+            <h2><i class="fa-solid fa-tasks"></i> Penugasan Bank Soal</h2>
+            <div id="bankAssignmentContainer" class="bank-assignment-container"></div>
+        </div>
+
+        <div id="rebutanView" class="control-box hidden">
+            <h2><i class="fa-solid fa-users"></i> Babak Rebutan</h2>
+            <div class="question-control">
+                <label for="rebutanQuestion">Soal No:</label>
+                <input type="number" id="rebutanQuestion" value="1" min="1">
+                <button id="rebutanResetBtn" class="btn btn-reset"><i class="fa-solid fa-rotate-left"></i> Reset Soal Ini</button>
+            </div>
+            <div class="live-question-controls">
+                 <button id="rebutanShowQuestionBtn" class="btn btn-show-question"><i class="fa-solid fa-eye"></i> Tampilkan Soal</button>
+                 <button id="rebutanStartTimerBtn" class="btn btn-start-timer"><i class="fa-solid fa-hourglass-start"></i> Jalankan Waktu</button>
+                 <button id="rebutanHideQuestionBtn" class="btn btn-hide-question"><i class="fa-solid fa-eye-slash"></i> Sembunyikan Soal</button>
+            </div>
+            <div id="rebutanTeamsContainer" style="margin-top: 25px;"></div>
+            <div class="question-nav-buttons">
+                <button id="rebutanPrevQuestionBtn" class="btn"><i class="fa-solid fa-backward"></i> Soal Sebelumnya</button>
+                <button id="rebutanNextQuestionBtn" class="btn"><i class="fa-solid fa-forward"></i> Soal Berikutnya</button>
+            </div>
+        </div>
+
+        <div id="wajibView" class="control-box hidden">
+            <h2><i class="fa-solid fa-user"></i> Babak Wajib</h2>
+            <div class="wajib-controls">
+                <p id="wajibInfo"></p> 
+                <div id="wajibQuestionIndicator" class="question-indicator-container"></div>
+                <label for="wajibTeamSelect">Tim (Poin):</label>
+                <select id="wajibTeamSelect"></select>
+                <label for="wajibQuestion">Soal No:</label>
+                <input type="number" id="wajibQuestion" value="1" min="1" placeholder="Soal No.">
+                <div class="live-question-controls">
+                    <button id="wajibShowQuestionBtn" class="btn btn-show-question"><i class="fa-solid fa-eye"></i> Tampilkan Soal</button>
+                    <button id="wajibStartTimerBtn" class="btn btn-start-timer"><i class="fa-solid fa-hourglass-start"></i> Jalankan Waktu</button>
+                    <button id="wajibHideQuestionBtn" class="btn btn-hide-question"><i class="fa-solid fa-eye-slash"></i> Sembunyikan Soal</button>
+                </div>
+                <div class="wajib-actions">
+                    <button id="wajibBtnWrong" class="btn btn-wajib-wrong">Catat Jawaban SALAH</button>
+                    <button id="wajibBtnCorrect" class="btn btn-wajib-correct">Catat Jawaban BENAR</button>
+                </div>
+                 <button id="wajibResetBtn" class="btn btn-reset" style="margin-top: 10px;">Reset Jawaban Tim Ini</button>
+            </div>
+            <div class="question-nav-buttons">
+                <button id="wajibPrevQuestionBtn" class="btn"><i class="fa-solid fa-backward"></i> Soal Sebelumnya</button>
+                <button id="wajibNextQuestionBtn" class="btn"><i class="fa-solid fa-forward"></i> Soal Berikutnya</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Copyright &copy; 2025 @sir.berro
+    </footer>
+
+    <audio id="sfxPlayer"></audio>
+    <script src="game-logic.js"></script>
+    <script>
+        const sfxPlayer = document.getElementById('sfxPlayer');
+        const wajibTeamSelect = document.getElementById('wajibTeamSelect');
+        const wajibQuestionInput = document.getElementById('wajibQuestion');
+        const rebutanQuestionInput = document.getElementById('rebutanQuestion');
+        const wajibInfo = document.getElementById('wajibInfo');
+        const manualTeamSelect = document.getElementById('manualTeamSelect');
+        const manualScoreInput = document.getElementById('manualScoreInput');
+
+        document.addEventListener('DOMContentLoaded', () => { if (loadGameData()) renderAdminPanel(); });
+
+        function renderAdminPanel(lastSelectedTeamId = null) {
+            const currentRoundRules = gameData.rounds.find(r => r.roundNumber === gameData.currentRound);
+            if (!currentRoundRules) return;
+            const roundType = currentRoundRules.type;
+
+            document.getElementById('gameTitle').textContent = gameData.gameTitle;
+            document.getElementById('roundInfo').textContent = `RONDE ${gameData.currentRound} - ${roundType === 'wajib' ? 'Babak Wajib' : 'Babak Rebutan'}`;
+
+            const currentManualTeam = manualTeamSelect.value;
+            manualTeamSelect.innerHTML = '';
+            gameData.teams.forEach(team => {
+                manualTeamSelect.innerHTML += `<option value="${team.id}">${team.name} (${team.score})</option>`;
+            });
+            if(currentManualTeam) manualTeamSelect.value = currentManualTeam;
+
+            const rebutanView = document.getElementById('rebutanView');
+            const wajibView = document.getElementById('wajibView');
+            const bankAssignmentView = document.getElementById('bankAssignmentView');
+
+            if (roundType === 'wajib') {
+                wajibView.classList.remove('hidden');
+                rebutanView.classList.add('hidden');
+                bankAssignmentView.classList.remove('hidden');
+                renderWajibView(currentRoundRules, lastSelectedTeamId);
+                renderBankAssignmentView();
+            } else {
+                rebutanView.classList.remove('hidden');
+                wajibView.classList.add('hidden');
+                bankAssignmentView.classList.add('hidden');
+                renderRebutanView(currentRoundRules);
+            }
+            updateTimerButtons(); // Panggil fungsi update tombol
+        }
+        
+        // --- FUNGSI BARU UNTUK UPDATE TAMPILAN TOMBOL TIMER ---
+        function updateTimerButtons() {
+            const wajibBtn = document.getElementById('wajibStartTimerBtn');
+            const rebutanBtn = document.getElementById('rebutanStartTimerBtn');
+            const liveQ = gameData.liveQuestion;
+
+            const defaultText = `<i class="fa-solid fa-hourglass-start"></i> Jalankan Waktu`;
+            const pauseText = `<i class="fa-solid fa-pause"></i> Jeda Waktu`;
+            const resumeText = `<i class="fa-solid fa-play"></i> Lanjutkan Waktu`;
+
+            wajibBtn.innerHTML = defaultText;
+            rebutanBtn.innerHTML = defaultText;
+
+            if (liveQ && liveQ.timer > 0) {
+                if (liveQ.timer_state === 'running') {
+                    wajibBtn.innerHTML = pauseText;
+                    rebutanBtn.innerHTML = pauseText;
+                } else if (liveQ.timer_state === 'paused') {
+                    wajibBtn.innerHTML = resumeText;
+                    rebutanBtn.innerHTML = resumeText;
+                }
+            }
+        }
+        
+        function renderBankAssignmentView() {
+            const container = document.getElementById('bankAssignmentContainer');
+            container.innerHTML = '';
+            
+            gameData.teams.forEach(team => {
+                const roundKey = `round${gameData.currentRound}`;
+                const assignedBankId = team.bankAssignments[roundKey];
+                let optionsHtml = '<option value="">-- Pilih Bank Soal --</option>';
+                
+                gameData.questionBanks.forEach(bank => {
+                    const isSelected = bank.id === assignedBankId ? 'selected' : '';
+                    optionsHtml += `<option value="${bank.id}" ${isSelected}>${bank.name} (${bank.questions.length} Soal)</option>`;
+                });
+
+                const row = `
+                    <div class="bank-assignment-row">
+                        <label for="assign-bank-${team.id}">${team.name}</label>
+                        <select id="assign-bank-${team.id}" class="bank-assignment-select" data-team-id="${team.id}">
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                `;
+                container.innerHTML += row;
+            });
+        }
+        
+        function renderWajibView(rules, lastSelectedTeamId) {
+            const teamSelect = document.getElementById('wajibTeamSelect');
+            const currentQuestionNumber = parseInt(wajibQuestionInput.value);
+            
+            const selectedTeamId = lastSelectedTeamId || teamSelect.value || (gameData.teams.length > 0 ? gameData.teams[0].id : null);
+            
+            teamSelect.innerHTML = '';
+            gameData.teams.forEach(team => {
+                teamSelect.innerHTML += `<option value="${team.id}">${team.name} (${team.score})</option>`;
+            });
+            if (selectedTeamId) teamSelect.value = selectedTeamId;
+            
+            const selectedTeamData = gameData.teams.find(t => t.id === selectedTeamId);
+            if (!selectedTeamData) return;
+
+            const assignedBankId = selectedTeamData.bankAssignments[`round${gameData.currentRound}`];
+            const bank = gameData.questionBanks.find(b => b.id === assignedBankId);
+            const numQuestionsForTeam = bank ? bank.questions.length : 0;
+            wajibQuestionInput.max = numQuestionsForTeam;
+
+            const selectedTeamName = teamSelect.options[teamSelect.selectedIndex].text.split(' (')[0];
+            wajibInfo.textContent = `Menilai Soal No. ${currentQuestionNumber} untuk Tim: ${selectedTeamName}`;
+
+            const indicatorContainer = document.getElementById('wajibQuestionIndicator');
+            if (selectedTeamData && numQuestionsForTeam > 0) {
+                const answers = selectedTeamData.answers[`round${gameData.currentRound}`];
+                let indicatorsHtml = '';
+                for (let i = 0; i < numQuestionsForTeam; i++) {
+                    const answerStatus = answers[i] || '-';
+                    let statusClass = '';
+                    if (answerStatus === 'O') statusClass = 'correct';
+                    else if (answerStatus === 'X') statusClass = 'wrong';
+                    const isCurrent = (i + 1 === currentQuestionNumber);
+                    indicatorsHtml += `<div class="q-indicator ${statusClass} ${isCurrent ? 'current' : ''}" data-question-number="${i + 1}">${i + 1}</div>`;
+                }
+                indicatorContainer.innerHTML = indicatorsHtml;
+            } else {
+                 indicatorContainer.innerHTML = `<p style="color: var(--yellow);">Pilih Bank Soal untuk tim ini terlebih dahulu.</p>`;
+            }
+        }
+        
+        function renderRebutanView(rules) {
+            document.getElementById('rebutanQuestion').max = rules.numQuestions;
+            const teamsContainer = document.getElementById('rebutanTeamsContainer');
+            teamsContainer.innerHTML = '';
+            const questionIndex = parseInt(document.getElementById('rebutanQuestion').value) - 1;
+            gameData.teams.forEach(team => {
+                let cardClass = 'default-state';
+                if(questionIndex >= 0 && questionIndex < rules.numQuestions) {
+                    const answer = team.answers[`round${gameData.currentRound}`][questionIndex];
+                    if (answer === 'O') cardClass = 'answered-correct';
+                    else if (answer === 'X') cardClass = 'answered-wrong';
+                }
+                teamsContainer.innerHTML += `
+                    <div class="admin-team-card ${cardClass}">
+                        <div class="admin-team-info">${team.name} (${team.score})</div>
+                        <div class="admin-buttons">
+                            <button class="btn btn-admin-correct" data-team-id="${team.id}">Benar</button>
+                            <button class="btn btn-admin-wrong" data-team-id="${team.id}">Salah</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        document.getElementById('addScoreBtn').addEventListener('click', () => {
+            const teamId = manualTeamSelect.value;
+            const amount = parseInt(manualScoreInput.value);
+            if(adjustScore(teamId, amount)) { manualScoreInput.value = ''; renderAdminPanel(); }
+        });
+        document.getElementById('subtractScoreBtn').addEventListener('click', () => {
+            const teamId = manualTeamSelect.value;
+            const amount = parseInt(manualScoreInput.value);
+            if(adjustScore(teamId, -Math.abs(amount))) { manualScoreInput.value = ''; renderAdminPanel(); }
+        });
+        
+        document.getElementById('bankAssignmentView').addEventListener('change', (e) => {
+             if (e.target.classList.contains('bank-assignment-select')) {
+                const teamId = e.target.dataset.teamId;
+                const bankId = e.target.value;
+                if(assignBankToTeam(teamId, bankId)) {
+                    wajibQuestionInput.value = 1;
+                    renderAdminPanel(document.getElementById('wajibTeamSelect').value);
+                }
+            }
+        });
+
+        // --- Event Listener diubah untuk memanggil fungsi toggleTimer ---
+        document.getElementById('wajibShowQuestionBtn').addEventListener('click', () => startQuestion(wajibTeamSelect.value, parseInt(wajibQuestionInput.value)));
+        document.getElementById('wajibStartTimerBtn').addEventListener('click', () => toggleTimer());
+        document.getElementById('wajibHideQuestionBtn').addEventListener('click', () => endQuestion());
+        document.getElementById('rebutanShowQuestionBtn').addEventListener('click', () => startQuestion(null, parseInt(rebutanQuestionInput.value)));
+        document.getElementById('rebutanStartTimerBtn').addEventListener('click', () => toggleTimer());
+        document.getElementById('rebutanHideQuestionBtn').addEventListener('click', () => endQuestion());
+
+
+        document.getElementById('rebutanTeamsContainer').addEventListener('click', e => {
+            const questionNumber = parseInt(rebutanQuestionInput.value);
+            const teamId = e.target.dataset.teamId;
+            if (e.target.matches('.btn-admin-correct')) { recordSingleAnswer(teamId, questionNumber, true); sfxPlayer.src = 'audio/jawaban_benar.mp3'; sfxPlayer.play(); }
+            if (e.target.matches('.btn-admin-wrong')) { recordSingleAnswer(teamId, questionNumber, false); sfxPlayer.src = 'audio/jawaban_salah.mp3'; sfxPlayer.play(); }
+            renderAdminPanel();
+        });
+        rebutanQuestionInput.addEventListener('change', renderAdminPanel);
+        document.getElementById('rebutanResetBtn').addEventListener('click', () => {
+            const questionNumber = parseInt(rebutanQuestionInput.value);
+            if(confirm(`Yakin ingin mereset SEMUA penilaian untuk Soal No. ${questionNumber}?`)) { resetQuestion(questionNumber); renderAdminPanel(); }
+        });
+
+        document.getElementById('wajibBtnCorrect').addEventListener('click', () => {
+            const teamId = wajibTeamSelect.value;
+            recordSingleAnswer(teamId, parseInt(wajibQuestionInput.value), true);
+            sfxPlayer.src = 'audio/jawaban_benar.mp3'; sfxPlayer.play();
+            renderAdminPanel(teamId);
+        });
+        document.getElementById('wajibBtnWrong').addEventListener('click', () => {
+            const teamId = wajibTeamSelect.value;
+            recordSingleAnswer(teamId, parseInt(wajibQuestionInput.value), false);
+            sfxPlayer.src = 'audio/jawaban_salah.mp3'; sfxPlayer.play();
+            renderAdminPanel(teamId);
+        });
+        wajibTeamSelect.addEventListener('change', () => {
+            wajibQuestionInput.value = 1;
+            renderAdminPanel(wajibTeamSelect.value);
+        });
+        wajibQuestionInput.addEventListener('change', () => renderAdminPanel(wajibTeamSelect.value));
+        document.getElementById('wajibResetBtn').addEventListener('click', () => {
+            if(confirm('Yakin ingin mereset jawaban tim ini untuk soal ini?')) { resetQuestion(wajibQuestionInput.value, wajibTeamSelect.value); renderAdminPanel(wajibTeamSelect.value); }
+        });
+        document.getElementById('wajibQuestionIndicator').addEventListener('click', (e) => {
+            if (e.target.classList.contains('q-indicator')) {
+                wajibQuestionInput.value = e.target.dataset.questionNumber;
+                renderAdminPanel(wajibTeamSelect.value);
+            }
+        });
+        
+        document.getElementById('prevRoundBtn').addEventListener('click', () => {
+            if(confirm('Yakin ingin kembali ke ronde sebelumnya?')) {
+                previousRound();
+                wajibQuestionInput.value = 1;
+                rebutanQuestionInput.value = 1;
+                renderAdminPanel();
+            }
+        });
+
+        document.getElementById('nextRoundBtn').addEventListener('click', () => {
+            if(confirm('Yakin ingin lanjut ke ronde berikutnya?')) {
+                nextRound();
+                wajibQuestionInput.value = 1;
+                rebutanQuestionInput.value = 1;
+                renderAdminPanel();
+            }
+        });
+
+        window.addEventListener('storage', () => { if(loadGameData()) renderAdminPanel(); });
+
+        document.getElementById('wajibNextQuestionBtn').addEventListener('click', () => { endQuestion(); let nextQ = parseInt(wajibQuestionInput.value) + 1; if (nextQ > parseInt(wajibQuestionInput.max)) nextQ = parseInt(wajibQuestionInput.max); wajibQuestionInput.value = nextQ; renderAdminPanel(wajibTeamSelect.value); });
+        document.getElementById('wajibPrevQuestionBtn').addEventListener('click', () => { endQuestion(); let prevQ = parseInt(wajibQuestionInput.value) - 1; if (prevQ < 1) prevQ = 1; wajibQuestionInput.value = prevQ; renderAdminPanel(wajibTeamSelect.value); });
+        document.getElementById('rebutanNextQuestionBtn').addEventListener('click', () => { endQuestion(); let nextQ = parseInt(rebutanQuestionInput.value) + 1; if (nextQ > parseInt(rebutanQuestionInput.max)) nextQ = parseInt(rebutanQuestionInput.max); rebutanQuestionInput.value = nextQ; renderAdminPanel(); });
+        document.getElementById('rebutanPrevQuestionBtn').addEventListener('click', () => { endQuestion(); let prevQ = parseInt(rebutanQuestionInput.value) - 1; if (prevQ < 1) prevQ = 1; rebutanQuestionInput.value = prevQ; renderAdminPanel(); });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard Kuis 317</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+            --card-bg: rgba(30, 33, 58, 0.7); --text-primary: #ffffff; --text-secondary: #a9a8c4;
+            --accent-1: #ff477e; --accent-2: #00c2ff; --shadow-color: rgba(0, 0, 0, 0.5);
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+            --correct: #00ff9d; --incorrect: #ff5252; --unanswered: #4a4a6e;
+        }
+        body.light-mode {
+            --bg-gradient-start: #e0eafc; --bg-gradient-mid: #cfdef3; --bg-gradient-end: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.7); --text-primary: #1c1e21; --text-secondary: #565872;
+            --accent-1: #ef476f; --accent-2: #0077b6; --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        @keyframes animated-gradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+            background-size: 400% 400%; animation: animated-gradient 15s ease infinite;
+            color: var(--text-primary); padding: 20px 40px; overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+        #mainViews { transition: filter 0.5s, opacity 0.5s; }
+        .blur-background { filter: blur(10px) brightness(0.7); opacity: 0.5; pointer-events: none; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; }
+        .header { text-align: left; }
+        h1 { font-size: 4rem; font-weight: 900; margin: 0; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-1); color: var(--text-primary); }
+        p { font-size: 2rem; font-weight: 700; margin-top: -10px; color: var(--accent-2); }
+        .theme-switcher { cursor: pointer; font-size: 2rem; text-shadow: 0 0 10px var(--accent-2); }
+        .theme-switcher .fa-sun { display: none; }
+        body.light-mode .theme-switcher .fa-sun { display: block; }
+        body.light-mode .theme-switcher .fa-moon { display: none; }
+        .controls-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 20px 0 30px 0;}
+        .view-switcher { display: flex; justify-content: center; gap: 10px; }
+        .view-btn, #toggleAllAnswersBtn {
+            padding: 10px 20px; font-size: 1rem; font-weight: 700; background: none;
+            color: var(--text-secondary); border: 2px solid var(--text-secondary);
+            border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+        }
+        .view-btn.active, #toggleAllAnswersBtn:hover {
+            background-color: var(--accent-2); border-color: var(--accent-2); color: white; box-shadow: 0 0 15px var(--accent-2);
+        }
+        #toggleAllAnswersBtn { background-color: var(--accent-1); border-color: var(--accent-1); display: none;}
+        #toggleAllAnswersBtn:hover { background-color: var(--accent-1); filter: brightness(1.2); }
+        .view-container { display: none; }
+        .view-container.active { display: block; }
+        #detailsView ul { list-style: none; padding: 0; max-width: 1200px; margin: 0 auto; }
+        .team-card {
+            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px; border-radius: 20px; padding: 15px 25px;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            cursor: pointer;
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .main-info { display: flex; align-items: center; gap: 20px; }
+        .rank { font-size: 2rem; font-weight: 900; width: 60px; text-align: center; color: var(--text-secondary); flex-shrink: 0; }
+        .rank { display: flex; align-items: center; justify-content: center; gap: 10px; width: 80px; }
+        .rank i { font-size: 1.8rem; }
+        .rank-1, .rank-2, .rank-3 { font-size: 3rem; }
+        .team-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 0 15px var(--shadow-color); flex-shrink: 0; }
+        .team-details { flex-grow: 1; font-size: 2.5rem; font-weight: 700; }
+        .score { font-size: 4rem; font-weight: 900; color: var(--accent-1); min-width: 150px; text-align: right; }
+        .rank-1{color:var(--gold)} .rank-2{color:var(--silver)} .rank-3{color:var(--bronze)}
+        .answer-grid {
+            border-top: 1px solid rgba(255,255,255,0.1); display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+            justify-content: flex-start;
+            gap: 8px;
+            max-height: 0; overflow: hidden; opacity: 0; margin-top: 0; padding-top: 0;
+            transition: all 0.5s ease-in-out;
+        }
+        .answer-grid.visible { max-height: 500px; opacity: 1; margin-top: 20px; padding-top: 20px; }
+        .answer-box { width: 100%; padding-bottom: 100%; border-radius: 8px; position: relative; }
+        .answer-box span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 600; color: white; font-size: 3.2rem; }
+        .box-O{background-color:var(--correct); box-shadow: 0 0 10px var(--correct);}
+        .box-X{background-color:var(--incorrect); box-shadow: 0 0 10px var(--incorrect);}
+        .box--{background-color:var(--unanswered);}
+        
+        @keyframes medalAppear { from { opacity: 0; transform: scale(0.3) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(-20deg); } }
+        @keyframes logoBounceIn { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(0.95); } 100% { transform: scale(1); } }
+        @keyframes floatAndRotate { 0% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(5deg); } 100% { transform: translateY(0) rotate(0deg); } }
+        @keyframes breathingGlow { from { box-shadow: 0 0 25px var(--bar-color-shadow); } to { box-shadow: 0 0 40px var(--bar-color-shadow), 0 0 15px var(--bar-color-light) inset; } }
+        @keyframes moveParticles { from { transform: translateY(0); } to { transform: translateY(-200px); } }
+        #graphView {
+            display: none; justify-content: flex-start; align-items: flex-end; height: 65vh; max-width: 1200px; margin: 0 auto;
+            padding: 20px 40px 0 40px; background-color: var(--card-bg); border-radius: 15px; border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative; overflow: hidden;
+        }
+        #graphView::before, #graphView::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 200%; background-repeat: repeat; background-position: center;
+            will-change: transform; z-index: 0;
+        }
+        #graphView::before { background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0, rgba(255, 255, 255, 0.8) 1px, transparent 1px); background-size: 40px 40px; animation: moveParticles 25s linear infinite; opacity: 0.2; }
+        #graphView::after { background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 1px, transparent 1px); background-size: 20px 20px; animation: moveParticles 15s linear infinite; opacity: 0.2; }
+        #graphView:hover .bar-container:not(:hover) { opacity: 0.7; transition: opacity 0.3s ease; }
+        #graphView .bar-container:hover { opacity: 1; }
+        #graphView.active { display: flex; }
+        .medal-icon { position: absolute; top: -15px; left: -15px; font-size: 2.5rem; z-index: 15; text-shadow: 0px 3px 6px rgba(0,0,0,0.5); transform-origin: bottom right; transform: rotate(-20deg); animation: medalAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .medal-icon.gold { color: var(--gold); } .medal-icon.silver { color: var(--silver); } .medal-icon.bronze { color: var(--bronze); }
+        @keyframes raceIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .bar-container { height: 100%; width:100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; margin: 0 10px; position: relative; padding-bottom: 20px; z-index: 1; transition: order 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s, transform 0.5s; animation: raceIn 0.5s ease-out forwards; }
+        .bar-logo-container { position: absolute; z-index: 10; display: flex; flex-direction: column; align-items: center; transition: top 0.7s cubic-bezier(0.25, 1, 0.5, 1); animation: floatAndRotate 6s ease-in-out infinite; }
+        .bar-logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 0 15px var(--bar-color-shadow); animation: logoBounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards .2s; order: 1; }
+        .bar { width: 80%; max-width: 80px; position: relative; transition: height 0.7s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease; transform-style: preserve-3d; }
+        .bar::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bar-color-dark), var(--bar-color-light)); border-radius: 8px 8px 0 0; animation: breathingGlow 3s ease-in-out infinite alternate; }
+        .bar::after { content: ''; position: absolute; top: -10px; left: 0; width: 100%; height: 20px; background: var(--bar-color-light); border-radius: 8px 8px 0 0; transform: perspective(100px) rotateX(60deg); filter: brightness(1.2); }
+        .bar-container:hover .bar { filter: brightness(1.3); transform: scale(1.03); }
+        .bar-logo-container .bar-score { position: static; order: 2; margin-top: 8px; font-size: 3rem; font-weight: 900; color: white; text-shadow: 0 0 10px var(--shadow-color), 0 0 20px var(--bar-color-shadow); }
+        .bar-label { position: absolute; bottom: -5px; width: 100%; text-align: center; font-weight: 600; font-size: 1.5rem; color: var(--text-secondary); }
+
+        @keyframes flash-correct-glow { 0% { box-shadow: 0 0 25px 10px rgba(0, 255, 157, 0.7), 0 0 10px var(--correct) inset; } 50% { box-shadow: 0 0 15px 5px rgba(0, 255, 157, 0.4), 0 0 5px var(--correct) inset; } 100% { box-shadow: 0 0 15px var(--shadow-color); } }
+        @keyframes flash-wrong-glow { 0% { box-shadow: 0 0 25px 10px rgba(255, 82, 82, 0.7), 0 0 10px var(--incorrect) inset; } 50% { box-shadow: 0 0 15px 5px rgba(255, 82, 82, 0.4), 0 0 5px var(--incorrect) inset; } 100% { box-shadow: 0 0 15px var(--shadow-color); } }
+        .team-card.flash-correct { animation: flash-correct-glow 2s ease-out; }
+        .team-card.flash-wrong { animation: flash-wrong-glow 2s ease-out; }
+
+        .winner-screen-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 12, 41, 0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; opacity: 0; animation: fadeInWinner 0.5s forwards; }
+        @keyframes fadeInWinner { to { opacity: 1; } }
+        .winner-content { text-align: center; }
+        .winner-title { font-size: 5rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px var(--gold); margin-bottom: 40px; animation: slideDown 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .podium { display: flex; align-items: flex-end; gap: 20px; }
+        @keyframes popUp { 0% { transform: translateY(100px) scale(0.8); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        .podium-place { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 2px solid; min-width: 220px; animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .place-1 { order: 2; border-color: var(--gold); box-shadow: 0 0 30px var(--gold); padding-bottom: 40px; animation-delay: 0.4s; }
+        .place-2 { order: 1; border-color: var(--silver); animation-delay: 0.2s; }
+        .place-3 { order: 3; border-color: var(--bronze); animation-delay: 0s; }
+        .podium-rank { font-size: 3rem; font-weight: 900; margin-bottom: 15px; }
+        .place-1 .podium-rank { color: var(--gold); font-size: 4rem; }
+        .place-2 .podium-rank { color: var(--silver); }
+        .place-3 .podium-rank { color: var(--bronze); }
+        .podium-logo { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; margin-bottom: 10px; object-fit: cover; }
+        .place-1 .podium-logo { width: 160px; height: 160px; }
+        .podium-place h3 { font-size: 2rem; margin: 10px 0 5px 0; color: var(--text-primary); }
+        .podium-score { font-size: 1.5rem; color: var(--accent-2); margin: 0; font-weight: 700; }
+        #restartGameBtn { margin-top: 50px; padding: 15px 40px; font-size: 1.2rem; background: var(--accent-1); color: white; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; animation: popUp 0.6s forwards; animation-delay: 0.8s; opacity: 0; }
+        #restartGameBtn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        #questionDisplayView {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(9, 10, 15, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInQuestionView 0.5s forwards;
+        }
+        @keyframes fadeInQuestionView { to { opacity: 1; } }
+
+        .question-header { text-align: center; margin-bottom: 20px; }
+        .question-header h2 { font-size: 3rem; color: var(--accent-1); margin: 0; font-weight: 700; text-transform: uppercase; }
+        .question-header p { font-size: 2rem; color: var(--accent-2); margin-top: 5px; font-weight: 600; }
+        
+        #liveContentContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #questionText { font-size: 3.5rem; line-height: 1.3; color: var(--text-primary); font-weight: 700; margin: 20px; padding: 30px; border: 3px solid var(--accent-2); border-radius: 15px; max-width: 90%; background-color: rgba(0,0,0,0.2);}
+        .timer-display { font-size: 8rem; font-weight: 900; color: var(--gold); text-shadow: 0 0 20px var(--gold); margin-top: 20px; }
+        .timer-display.timeout { color: var(--incorrect); text-shadow: 0 0 20px var(--incorrect); animation: pulse-timeout 1s infinite; }
+        @keyframes pulse-timeout { 50% { transform: scale(1.05); } }
+        
+        .feedback-display { font-size: 10rem; font-weight: 900; text-transform: uppercase; animation: popIn 0.5s; }
+        .feedback-correct { color: var(--correct); text-shadow: 0 0 25px var(--correct); }
+        .feedback-wrong { color: var(--incorrect); text-shadow: 0 0 25px var(--incorrect); }
+
+        .rebutan-teams-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+        .rebutan-team-plate { background-color: var(--unanswered); padding: 20px 40px; border-radius: 15px; font-size: 2.5rem; font-weight: 700; transition: all 0.3s ease; }
+        .rebutan-team-plate.answered-wrong { background-color: var(--incorrect); opacity: 0.7; text-decoration: line-through; }
+        .rebutan-team-plate.answered-correct { background-color: var(--correct); color: #1a1a2e; transform: scale(1.1); box-shadow: 0 0 25px var(--correct); }
+    </style>
+</head>
+<body>
+    <div id="mainViews">
+        <div class="top-bar">
+            <div class="header">
+                <h1 id="gameTitle"></h1>
+                <p id="roundInfo"></p>
+            </div>
+            <div class="theme-switcher" id="themeSwitcher">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </div>
+        </div>
+
+        <div class="controls-container">
+            <div class="view-switcher">
+                <button id="showDetailsBtn" class="view-btn active">Tampilan Detail</button>
+                <button id="showGraphBtn" class="view-btn">Tampilan Grafik</button>
+            </div>
+            <button id="toggleAllAnswersBtn">Tampilkan Semua Jawaban</button>
+        </div>
+
+        <div id="detailsView" class="view-container active">
+            <ul id="leaderboard-list"></ul>
+        </div>
+        <div id="graphView" class="view-container"></div>
+    </div>
+    
+    <div id="questionDisplayView">
+        <div class="question-header">
+            <h2 id="questionRoundTitle"></h2>
+            <p id="questionContext"></p>
+        </div>
+        <div id="liveContentContainer"></div>
+        <div id="rebutanTeams" class="rebutan-teams-container"></div>
+    </div>
+    
+    <div id="winnerScreen" class="winner-screen-container">
+        <div class="winner-content">
+            <h1 class="winner-title">HASIL AKHIR</h1>
+            <div class="podium">
+                <div class="podium-place place-3">
+                    <div class="podium-rank">3</div>
+                    <img id="winner3-logo" src="" alt="Juara 3" class="podium-logo">
+                    <h3 id="winner3-name">Tim C</h3>
+                    <p id="winner3-score" class="podium-score">80 Poin</p>
+                </div>
+                <div class="podium-place place-1">
+                    <div class="podium-rank"><i class="fas fa-crown"></i> 1</div>
+                    <img id="winner1-logo" src="" alt="Juara 1" class="podium-logo">
+                    <h3 id="winner1-name">Tim A</h3>
+                    <p id="winner1-score" class="podium-score">150 Poin</p>
+                </div>
+                <div class="podium-place place-2">
+                    <div class="podium-rank">2</div>
+                    <img id="winner2-logo" src="" alt="Juara 2" class="podium-logo">
+                    <h3 id="winner2-name">Tim B</h3>
+                    <p id="winner2-score" class="podium-score">120 Poin</p>
+                </div>
+            </div>
+            <button id="restartGameBtn" class="btn">Mulai Game Baru</button>
+        </div>
+    </div>
+    <audio id="musicPlayer" loop></audio>
+    <audio id="sfxTick" src="audio/countdown_tick.mp3"></audio>
+    <audio id="sfxTimeUp" src="audio/time_up.mp3"></audio>
+    <audio id="questionMusic" src="audio/musik_soal.mp3"></audio>
+    <script src="game-logic.js"></script>
+    <script>
+        let previousScores = {};
+        let timerInterval = null;
+        let localTimeLeft = 0;
+
+        const sfxTick = document.getElementById('sfxTick');
+        const sfxTimeUp = document.getElementById('sfxTimeUp');
+        const questionMusic = document.getElementById('questionMusic');
+
+        function saveGameDataToLocalStorage() {
+            localStorage.setItem('quizGameData', JSON.stringify(gameData));
+        }
+
+        // --- FUNGSI renderQuestionView YANG DIPERBAIKI ---
+        function renderQuestionView() {
+            const liveQ = gameData.liveQuestion;
+            const view = document.getElementById('questionDisplayView');
+            const mainViews = document.getElementById('mainViews');
+            const contentContainer = document.getElementById('liveContentContainer');
+            const rebutanTeamsEl = document.getElementById('rebutanTeams');
+
+            if (!liveQ) {
+                view.style.display = 'none';
+                mainViews.classList.remove('blur-background');
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = null;
+
+                questionMusic.pause();
+                questionMusic.currentTime = 0;
+                return;
+            }
+
+            if (questionMusic.paused) {
+                 questionMusic.play().catch(e => console.log("Autoplay musik ditolak browser"));
+            }
+
+            view.style.display = 'flex';
+            mainViews.classList.add('blur-background');
+            rebutanTeamsEl.innerHTML = ''; 
+            contentContainer.innerHTML = '';
+            document.getElementById('questionRoundTitle').textContent = `Ronde ${liveQ.roundNumber} - Soal ${liveQ.questionNumber}`;
+            
+            // Hentikan interval yang mungkin masih berjalan sebelum memulai yang baru
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            if (liveQ.type === 'wajib' && (liveQ.status === 'answered_correct' || liveQ.status === 'answered_wrong')) {
+                contentContainer.innerHTML = liveQ.status === 'answered_correct' ? `<div class="feedback-display feedback-correct">BENAR!</div>` : `<div class="feedback-display feedback-wrong">SALAH</div>`;
+                return;
+            }
+            
+            let questionText = '';
+            if (liveQ.type === 'wajib') {
+                const team = gameData.teams.find(t => t.id === liveQ.teamId);
+                const bankId = team.bankAssignments[`round${liveQ.roundNumber}`];
+                const bank = gameData.questionBanks.find(b => b.id === bankId);
+                questionText = bank.questions[liveQ.questionNumber - 1].text;
+                document.getElementById('questionContext').textContent = `Untuk Tim: ${team.name}`;
+            } else { // Rebutan
+                const round = gameData.rounds.find(r => r.roundNumber === liveQ.roundNumber);
+                questionText = round.questions[liveQ.questionNumber - 1].text;
+                document.getElementById('questionContext').textContent = 'Babak Rebutan';
+                renderRebutanTeamsStatus(liveQ);
+            }
+
+            contentContainer.innerHTML = `<div id="questionText">${questionText}</div>`;
+
+            if (liveQ.timer && liveQ.timer > 0) {
+                contentContainer.innerHTML += `<div id="questionTimer" class="timer-display"></div>`;
+                const timerEl = document.getElementById('questionTimer');
+                
+                // Ambil sisa waktu JIKA ADA, jika tidak, ambil waktu awal
+                localTimeLeft = (liveQ.time_left !== null) ? liveQ.time_left : liveQ.timer;
+                timerEl.textContent = localTimeLeft;
+
+                if (liveQ.timer_state === 'running') {
+                    startTimer(localTimeLeft); 
+                }
+            }
+        }
+        
+        function renderRebutanTeamsStatus(liveQ) {
+            const rebutanTeamsEl = document.getElementById('rebutanTeams');
+            rebutanTeamsEl.innerHTML = '';
+            const questionIndex = liveQ.questionNumber - 1;
+            gameData.teams.forEach(team => {
+                const answer = team.answers[`round${liveQ.roundNumber}`][questionIndex];
+                let statusClass = '';
+                if (answer === 'X') {
+                    statusClass = 'answered-wrong';
+                }
+                if (liveQ.status === 'answered_correct' && liveQ.answeringTeamId === team.id) {
+                    statusClass = 'answered-correct';
+                }
+                rebutanTeamsEl.innerHTML += `<div class="rebutan-team-plate ${statusClass}">${team.name}</div>`;
+            });
+        }
+
+         function startTimer(duration) {
+            const timerEl = document.getElementById('questionTimer');
+            if (!timerEl) return;
+            localTimeLeft = duration;
+            timerEl.classList.remove('timeout');
+            
+            // Pastikan tidak ada timer ganda
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                // Saat dijeda, admin akan mengubah timer_state.
+                // Leaderboard akan membaca perubahan ini melalui 'storage' event,
+                // lalu memanggil renderQuestionView yang akan menghentikan interval ini.
+                // Jadi tidak perlu cek state di sini lagi agar lebih sederhana.
+
+                localTimeLeft--;
+                if (localTimeLeft >= 0) {
+                    timerEl.textContent = localTimeLeft;
+                    if (localTimeLeft <= 5 && localTimeLeft >= 1) {
+                        sfxTick.currentTime = 0;
+                        sfxTick.play().catch(e => {});
+                    }
+                    if (localTimeLeft === 0) {
+                        sfxTimeUp.play().catch(e => {});
+                        // Saat waktu habis, simpan bahwa waktu tersisa adalah 0
+                        if(gameData.liveQuestion) {
+                            gameData.liveQuestion.time_left = 0;
+                            gameData.liveQuestion.timer_state = 'paused'; // Anggap dijeda
+                            saveGameDataToLocalStorage();
+                        }
+                    }
+                } else {
+                    timerEl.textContent = "HABIS";
+                    timerEl.classList.add('timeout');
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }, 1000);
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (gameData.liveQuestion && gameData.liveQuestion.timer_state === 'running') {
+                gameData.liveQuestion.time_left = localTimeLeft;
+                saveGameDataToLocalStorage();
+            }
+        });
+        
+        function updateAllViews() {
+            if (!loadGameData()) {
+                document.body.innerHTML = '<h1>Gagal memuat data game. Harap kembali ke halaman setup.</h1>';
+                return;
+            };
+            
+            // Sebelum render, cek apakah ada timer yang berjalan yang perlu dijeda
+            // Ini terjadi saat admin menekan tombol Jeda
+            if(timerInterval && gameData.liveQuestion && gameData.liveQuestion.timer_state === 'paused') {
+                gameData.liveQuestion.time_left = localTimeLeft;
+                saveGameDataToLocalStorage();
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            renderQuestionView();
+
+            if (gameData.status === 'finished') {
+                const sortedTeams = [...gameData.teams].sort((a, b) => b.score - a.score);
+                showWinnerScreen(sortedTeams);
+                return;
+            }
+
+            const currentRoundRules = gameData.rounds.find(r => r.roundNumber === gameData.currentRound);
+            if (!currentRoundRules) return;
+
+            const roundType = currentRoundRules.type;
+            document.getElementById('gameTitle').textContent = gameData.gameTitle;
+            document.getElementById('roundInfo').textContent = `RONDE ${gameData.currentRound} - ${roundType === 'wajib' ? 'Babak Wajib' : 'Babak Rebutan'}`;
+            
+            renderDetailsView(currentRoundRules);
+            renderGraphView();
+            
+            gameData.teams.forEach(t => previousScores[t.id] = t.score);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAllViews();
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'light') document.body.classList.add('light-mode');
+            const detailsView = document.getElementById('detailsView');
+            if (detailsView && detailsView.classList.contains('active')) {
+                const toggleBtn = document.getElementById('toggleAllAnswersBtn');
+                if (toggleBtn) toggleBtn.style.display = 'block';
+            }
+        });
+        
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'quizGameData') {
+                updateAllViews();
+            }
+        });
+
+        function renderDetailsView(currentRoundRules) {
+            const list = document.getElementById('leaderboard-list');
+            if (!list) return;
+
+            const sortedTeams = [...gameData.teams].sort((a, b) => b.score - a.score);
+            
+            list.innerHTML = sortedTeams.map((team, index) => {
+                const rank = index + 1;
+                const logoSrc = team.logo || `https://ui-avatars.com/api/?name=${team.name.replace(/\s/g, "+")}&background=random&color=fff&size=128`;
+                
+                let answersHtml = '';
+                const roundKey = `round${gameData.currentRound}`;
+                const roundAnswers = team.answers[roundKey];
+                let numQuestionsToShow;
+
+                if(currentRoundRules.type === 'wajib') {
+                    const bankId = team.bankAssignments[roundKey];
+                    const bank = gameData.questionBanks.find(b => b.id === bankId);
+                    numQuestionsToShow = bank ? bank.questions.length : 0;
+                } else {
+                    numQuestionsToShow = currentRoundRules.numQuestions;
+                }
+
+                if(roundAnswers){
+                    for(let i = 0; i < numQuestionsToShow; i++) {
+                        const answer = roundAnswers[i] || '-';
+                        answersHtml += `<div class="answer-box box-${answer}"><span>${i+1}</span></div>`;
+                    }
+                }
+
+                let rankDisplay = rank;
+                if (rank === 1) rankDisplay = `${rank} <i class="fas fa-medal" style="color: var(--gold);"></i>`;
+                else if (rank === 2) rankDisplay = `${rank} <i class="fas fa-medal" style="color: var(--silver);"></i>`;
+                else if (rank === 3) rankDisplay = `${rank} <i class="fas fa-medal" style="color: var(--bronze);"></i>`;
+
+                return `
+                    <li class="team-card" style="animation-delay: ${index * 0.08}s;">
+                        <div class="main-info">
+                            <div class="rank rank-${rank}">${rankDisplay}</div>
+                            <img src="${logoSrc}" alt="Logo Tim" class="team-logo">
+                            <div class="team-details">${team.name}</div>
+                            <div class="score" data-team-id="${team.id}" data-score="${team.score}">${previousScores[team.id] || 0}</div>
+                        </div>
+                        <div class="answer-grid">${answersHtml}</div>
+                    </li>`;
+            }).join('');
+            
+            sortedTeams.forEach(team => {
+                const scoreElement = document.querySelector(`#detailsView .score[data-team-id="${team.id}"]`);
+                if (scoreElement) {
+                    const startScore = previousScores[team.id] || 0;
+                    const endScore = team.score;
+                    
+                    const teamCard = scoreElement.closest('.team-card');
+                    if (teamCard) {
+                        teamCard.classList.remove('flash-correct', 'flash-wrong');
+                        if (endScore > startScore) setTimeout(() => teamCard.classList.add('flash-correct'), 10);
+                        else if (endScore < startScore) setTimeout(() => teamCard.classList.add('flash-wrong'), 10);
+                    }
+
+                    if(startScore !== endScore) animateScore(scoreElement, startScore, endScore, 1000);
+                    else scoreElement.textContent = endScore;
+                }
+            });
+        }
+        
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            let theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+        });
+        const showDetailsBtn = document.getElementById('showDetailsBtn');
+        const showGraphBtn = document.getElementById('showGraphBtn');
+        const detailsView = document.getElementById('detailsView');
+        const graphView = document.getElementById('graphView');
+        const toggleBtn = document.getElementById('toggleAllAnswersBtn');
+        showDetailsBtn.addEventListener('click', () => {
+            detailsView.classList.add('active');
+            graphView.classList.remove('active');
+            showDetailsBtn.classList.add('active');
+            showGraphBtn.classList.remove('active');
+            toggleBtn.style.display = 'block';
+        });
+        showGraphBtn.addEventListener('click', () => {
+            graphView.classList.add('active');
+            detailsView.classList.remove('active');
+            showGraphBtn.classList.add('active');
+            showDetailsBtn.classList.remove('active');
+            toggleBtn.style.display = 'none';
+        });
+        const leaderboardList = document.getElementById('leaderboard-list');
+        leaderboardList.addEventListener('click', (event) => {
+            if(event.target.id === 'toggleAllAnswersBtn') return;
+            const card = event.target.closest('.team-card');
+            if (!card) return;
+            const grid = card.querySelector('.answer-grid');
+            grid.classList.toggle('visible');
+        });
+        toggleBtn.addEventListener('click', () => {
+            const allGrids = document.querySelectorAll('#detailsView .answer-grid');
+            const isAnyVisible = Array.from(allGrids).some(grid => grid.classList.contains('visible'));
+            
+            if (isAnyVisible) {
+                allGrids.forEach(grid => grid.classList.remove('visible'));
+                toggleBtn.textContent = 'Tampilkan Semua Jawaban';
+            } else {
+                allGrids.forEach(grid => grid.classList.add('visible'));
+                toggleBtn.textContent = 'Sembunyikan Semua Jawaban';
+            }
+        });
+
+        function triggerConfetti() { const duration = 5 * 1000; const animationEnd = Date.now() + duration; const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1001 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } const interval = setInterval(function() { const timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) return clearInterval(interval); const particleCount = 50 * (timeLeft / duration); confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }); confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }); }, 250); }
+        function showWinnerScreen(sortedTeams) { const winnerScreen = document.getElementById('winnerScreen'); const podiumPlaces = [ { rank: 1, nameEl: 'winner1-name', scoreEl: 'winner1-score', logoEl: 'winner1-logo' }, { rank: 2, nameEl: 'winner2-name', scoreEl: 'winner2-score', logoEl: 'winner2-logo' }, { rank: 3, nameEl: 'winner3-name', scoreEl: 'winner3-score', logoEl: 'winner3-logo' } ]; podiumPlaces.forEach((place, index) => { const team = sortedTeams[index]; const placeElement = document.querySelector(`.place-${place.rank}`); if (team && placeElement) { document.getElementById(place.nameEl).textContent = team.name; document.getElementById(place.scoreEl).textContent = team.score + ' Poin'; document.getElementById(place.logoEl).src = team.logo || `https://ui-avatars.com/api/?name=${team.name.replace(/\s/g, "+")}&background=random&color=fff&size=128`; placeElement.style.display = 'block'; } else if (placeElement) { placeElement.style.display = 'none'; } }); winnerScreen.style.display = 'flex'; triggerConfetti(); const musicPlayer = document.getElementById('musicPlayer'); musicPlayer.src = 'audio/are_champion.mp3'; const playPromise = musicPlayer.play(); if (playPromise !== undefined) { playPromise.catch(error => { console.warn("Audio tidak bisa diputar otomatis, perlu interaksi pengguna di halaman leaderboard.", error); }); } document.getElementById('restartGameBtn').addEventListener('click', () => { if(confirm('Apakah Anda yakin ingin menghapus semua data dan kembali ke halaman setup?')) { localStorage.removeItem('quizGameData'); window.location.href = 'setup.html'; } }); }
+        function animateScore(element, start, end, duration) { let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); element.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) window.requestAnimationFrame(step); }; window.requestAnimationFrame(step); }
+        function renderGraphView() { const graphContainer = document.getElementById('graphView'); if (!graphContainer) return; const sortedTeams = [...gameData.teams].sort((a, b) => b.score - a.score); const teamOrderMap = new Map(sortedTeams.map((team, index) => [team.id, index])); const maxScore = Math.max(...gameData.teams.map(t => t.score), 100); if (graphContainer.children.length !== gameData.teams.length) { graphContainer.innerHTML = ''; gameData.teams.forEach((team, index) => { const logoSrc = team.logo || `https://ui-avatars.com/api/?name=${team.name.replace(/\s/g, "+")}&background=random&color=fff&size=128`; const colors = [ {light: '#ff477e', dark: '#d7003a', shadow: 'rgba(255, 71, 126, 0.7)'}, {light: '#00c2ff', dark: '#008db3', shadow: 'rgba(0, 194, 255, 0.7)'}, {light: '#9b59b6', dark: '#7b3e9a', shadow: 'rgba(155, 89, 182, 0.7)'}, {light: '#f1c40f', dark: '#c29d0b', shadow: 'rgba(241, 196, 15, 0.7)'}, {light: '#2ecc71', dark: '#25a25a', shadow: 'rgba(46, 204, 113, 0.7)'}, {light: '#e67e22', dark: '#b8641b', shadow: 'rgba(230, 126, 34, 0.7)'} ]; const barColor = colors[index % colors.length]; const barHtml = ` <div class="bar-container" data-team-id="${team.id}" style=" --bar-color-light: ${barColor.light}; --bar-color-dark: ${barColor.dark}; --bar-color-shadow: ${barColor.shadow}; animation-delay: ${index * 0.08}s;"> <div class="bar-logo-container"> <img src="${logoSrc}" alt="Logo ${team.name}" class="bar-logo"> <div class="bar-score" data-team-id="graph-${team.id}">${previousScores[team.id] || 0}</div> </div> <div class="bar"></div> <div class="bar-label">${team.name}</div> </div>`; graphContainer.innerHTML += barHtml; }); } gameData.teams.forEach(team => { const barContainer = graphContainer.querySelector(`.bar-container[data-team-id="${team.id}"]`); if (barContainer) { const barHeight = (team.score / maxScore) * 100; const barElement = barContainer.querySelector('.bar'); const logoContainer = barContainer.querySelector('.bar-logo-container'); const scoreElement = barContainer.querySelector(`.bar-score[data-team-id="graph-${team.id}"]`); barContainer.style.order = teamOrderMap.get(team.id); barElement.style.height = `${barHeight > 0 ? barHeight : 0}%`; const logoTopPosition = (barHeight / 100 * (graphContainer.clientHeight || 0)) + 170; logoContainer.style.top = `calc(100% - ${logoTopPosition}px)`; const startScore = previousScores[team.id] || 0; const endScore = team.score; if (startScore !== endScore) { animateScore(scoreElement, startScore, endScore, 1000); } else { scoreElement.textContent = endScore; } const rank = teamOrderMap.get(team.id); let existingMedal = logoContainer.querySelector('.medal-icon'); if (existingMedal) existingMedal.remove(); if (rank <= 2) { const medalClasses = ['gold', 'silver', 'bronze']; const newMedal = document.createElement('div'); newMedal.className = `medal-icon ${medalClasses[rank]}`; newMedal.innerHTML = '<i class="fas fa-medal"></i>'; const logoImg = logoContainer.querySelector('.bar-logo'); if(logoImg) { logoContainer.insertBefore(newMedal, logoImg); } else { logoContainer.prepend(newMedal); } } } }); }
+    </script>
+</body>
+</html>
