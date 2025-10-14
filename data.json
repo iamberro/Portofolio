@@ -1,0 +1,200 @@
+{
+  "projects": [
+    {
+      "category": "web",
+      "tags": "dashboard admin",
+      "icon": "fas fa-tachometer-alt",
+      "badge": null,
+      "title": "Sales Dashboard (Local Access)",
+      "description": "Interactive dashboard for real-time sales monitoring and reporting",
+      "tech": ["HTML/CSS", "JavaScript", "API"]
+    },
+    {
+      "category": "data",
+      "tags": "report excel",
+      "icon": "fas fa-file-excel",
+      "badge": null,
+      "title": "Dashboard Sales Report",
+      "description": "Excel automation for daily sales data processing and visualization",
+      "tech": ["Spreadsheet", "Excel", "Google Form"]
+    },
+    {
+      "category": "web",
+      "tags": "tracking pengeluaran",
+      "icon": "fas fa-globe",
+      "badge": null,
+      "title": "Tracking Sallary",
+      "description": "Web for Tracking Pemasukan dan Pengeluaran yang bisa dipantau secara online",
+      "tech": ["PHP", "Bootstrap", "MySql"]
+    },
+    {
+      "category": "web",
+      "tags": "tracking pengeluaran",
+      "icon": "fas fa-globe",
+      "badge": null,
+      "title": "Unit Usaha Koperasi 317",
+      "description": "Web for Tracking Unit Usaha 317 Sales and Report",
+      "tech": ["PHP", "Bootstrap", "MySql"]
+    },
+    {
+      "category": "web",
+      "tags": "sales snt",
+      "icon": "fas fa-globe",
+      "badge": null,
+      "title": "Sales SNT View",
+      "description": "Web for View Sales Shop and Talk",
+      "tech": ["HTML", "CSS", "Java Script"]
+    },
+    {
+      "category": "robot",
+      "tags": "bot whatsapp",
+      "icon": "fab fa-android",
+      "badge": "HOT",
+      "title": "Bot for Whatsapp",
+      "description": "Account Bot Whatasapp yang bisa digunakan sebagai assiten pribadi, mulai dari pengingat sampai menganalisa saham",
+      "tech": ["HTML", "CSS", "Java Script"]
+    },
+    {
+      "category": "robot",
+      "tags": "bot telegram",
+      "icon": "fab fa-android",
+      "badge": "NEW",
+      "title": "Bot for Telegram",
+      "description": "Account Bot Telegram yang bisa digunakan sebagai downlaoder video dan audio dari berbagai sumber",
+      "tech": ["HTML", "CSS", "Java Script"]
+    }
+  ],
+  "achievements": [
+    {
+      "icon": "fas fa-trophy",
+      "color": "gold",
+      "title": "Kompetensi Keahlian Kejuruan",
+      "description": "Sertifikasi Kompetensi Keahlian Kejuruan",
+      "date": "2013"
+    },
+    {
+      "icon": "fas fa-award",
+      "color": "bronze",
+      "title": "Nilai Kompetensi Keahlian Kejuruan",
+      "description": "Nilai Sertifikasi Kompetensi Keahlian Kejuruan",
+      "date": "2013"
+    }
+  ],
+  "projects_details": {
+    "Sales Dashboard (Local Access)": {
+      "title": "Sales Dashboard (Local Access)",
+      "category": "Web",
+      "date": "2025",
+      "description": "Interactive dashboard for real-time sales monitoring and reporting. Features include dynamic charts, data filtering, and export functionality. Built with modern web technologies for optimal performance.",
+      "tech": ["HTML/CSS", "JavaScript", "API", "Chart.js"],
+      "images": [
+        "assets/images/dashboard317/login.png",
+        "assets/images/dashboard317/register.png",
+        "assets/images/dashboard317/dashboard.png",
+        "assets/images/dashboard317/profile.png"
+      ],
+      "demoUrl": "aksesmaaf.html",
+      "codeUrl": "codemaaf.html"
+    },
+    "Dashboard Sales Report": {
+      "title": "Dashboard Sales Report",
+      "category": "Data",
+      "date": "2023",
+      "description": "Excel automation for daily sales data processing and visualization. This tool automatically imports sales data, cleans it, and generates comprehensive reports with pivot tables and charts.",
+      "tech": ["Excel", "Spreadsheet", "Google Form"],
+      "images": ["assets/images/sales/dashboard.png"],
+      "demoUrl": "https://docs.google.com/spreadsheets/d/1oOXCgLSf6V_OOR700lDdNjtD5r2JHCbeJUJZ4bxTW-g/edit?usp=sharing",
+      "codeUrl": "codemaaf.html"
+    },
+    "Tracking Sallary": {
+      "title": "Tracking Sallary",
+      "category": "Web",
+      "date": "2024",
+      "description": "Web application for tracking income and expenses with user authentication and data visualization. Helps users manage their finances with categorized transactions and monthly summaries.",
+      "tech": ["PHP", "Bootstrap", "MySQL", "Chart.js"],
+      "images": [
+        "assets/images/sallary/login.png",
+        "assets/images/sallary/register.png",
+        "assets/images/sallary/dashboard.png",
+        "assets/images/sallary/report.png",
+        "assets/images/sallary/pemasukan.png",
+        "assets/images/sallary/pengeluaran.png",
+        "assets/images/sallary/profile-setting.png",
+        "assets/images/sallary/details-setting.png",
+        "assets/images/sallary/user-setting.png",
+        "assets/images/sallary/history-setting.png"
+      ],
+      "demoUrl": "http://debang.my.id/sallary",
+      "codeUrl": "codemaaf.html"
+    },
+    "Unit Usaha Koperasi 317": {
+      "title": "Unit Usaha Koperasi 317",
+      "category": "Web",
+      "date": "2025",
+      "description": "Web application for Unit Usaha 317 do they Activity for Sale and Report Unit.",
+      "tech": ["PHP", "Bootstrap", "MySQL", "Chart.js"],
+      "images": [
+        "assets/images/koperasi/login.png",
+        "assets/images/koperasi/register.png",
+        "assets/images/koperasi/dashboard.png",
+        "assets/images/koperasi/transaksi.png",
+        "assets/images/koperasi/riwayat-transaksi.png",
+        "assets/images/koperasi/contoh-report-excel.png",
+        "assets/images/koperasi/contoh-struk.png",
+        "assets/images/koperasi/laporan.png",
+        "assets/images/koperasi/profile.png",
+        "assets/images/koperasi/setting-produk.png",
+        "assets/images/koperasi/setting-set.png",
+        "assets/images/koperasi/setting-user.png",
+        "assets/images/koperasi/setting-trx.png"
+      ],
+      "demoUrl": "http://debang.my.id/koperasi",
+      "codeUrl": "codemaaf.html"
+    },
+    "Sales SNT View": {
+      "title": "Sales SNT View",
+      "category": "Web",
+      "date": "2025",
+      "description": "Web for View Sales Shop and Talk",
+      "tech": ["HTML", "CSS", "Java Script"],
+      "images": [
+        "assets/images/snt/Page1.png",
+        "assets/images/snt/Page2.png"
+      ],
+      "demoUrl": "http://berro.my.id/",
+      "codeUrl": "codemaaf.html"
+    },
+    "Bot for Whatsapp": {
+      "title": "Bot for Whatsapp",
+      "category": "robot",
+      "date": "2025",
+      "description": "Account Bot Whatasapp yang bisa digunakan sebagai assiten pribadi, mulai dari pengingat sampai menganalisa saham",
+      "tech": ["HTML", "CSS", "Java Script"],
+      "images": [
+      ],
+      "demoUrl": "https://wa.me/6282318221577?text=!halo",
+      "codeUrl": "codemaaf.html"
+    },
+    "Bot for Telegram": {
+      "title": "Bot for Telegram",
+      "category": "robot",
+      "date": "2025",
+      "description": "Account Bot Telegram yang bisa digunakan sebagai downlaoder video dan audio dari berbagai sumber",
+      "tech": ["HTML", "CSS", "Java Script"],
+      "images": [
+      ],
+      "demoUrl": "https://wa.me/6282318221577?text=!halo",
+      "codeUrl": "codemaaf.html"
+    }
+  },
+  "achievements_details": {
+    "Kompetensi Keahlian Kejuruan": {
+      "imageUrl": "assets/images/sertifikasi/kompetensi.png",
+      "description": "Sertifikat Kopetensi Kejuruan Keahlian"
+    },
+    "Nilai Kompetensi Keahlian Kejuruan": {
+      "imageUrl": "assets/images/sertifikasi/kompetensi2.png",
+      "description": "Nilai Sertifikat Kopetensi Kejuruan Keahlian"
+    }
+  }
+}
