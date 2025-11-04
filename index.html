@@ -1,464 +1,678 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVFMLWT98T"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-GVFMLWT98T');
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agung Pradana Portofolio</title>
-    <link rel="icon" href="profile.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <title>Berro's // Digital Hub [PRO v2]</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/png" href="/favicon.png">
 
+    <style>
+        /* --- KEYFRAME ANIMASI --- */
+        
+        @keyframes bg-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 26ch; }
+        }
+        @keyframes caret-blink {
+            50% { border-color: transparent; }
+        }
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px 0px #ff00ff; }
+            25% { text-shadow: -2px -2px 0px #00ffff; }
+            50% { text-shadow: 2px -2px 0px #ff00ff; }
+            75% { text-shadow: -2px 2px 0px #00ffff; }
+            100% { text-shadow: 2px 2px 0px #ff00ff; }
+        }
+        @keyframes fast-blink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px #00ff00; }
+            50% { opacity: 0.3; box-shadow: none; }
+        }
+        @keyframes cursor-blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* [BARU] Animasi untuk Scanlines */
+        @keyframes scanline-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 4px; } /* Bergerak 1 pola (4px) */
+        }
+
+
+        /* --- Reset & Setup Dasar --- */
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #f5f2e8; /* Latar krem */
+            color: #1a1a1a;
+            background-image: radial-gradient(#dcdcdc 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+            animation: bg-pan 30s linear infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- [BARU] Efek Scanlines CRT --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Buat garis-garis tipis */
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                rgba(0, 0, 0, 0.15) 1px, /* Garis gelap */
+                transparent 2px,
+                transparent 3px
+            );
+            background-size: 100% 4px; /* Pola berulang setiap 4px */
+            z-index: 998; /* Di bawah player, di atas konten */
+            pointer-events: none; /* PENTING: Biar bisa klik tembus */
+            animation: scanline-move 8s linear infinite; /* Animasi gerak pelan */
+        }
+
+        /* Kontainer Utama */
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 20px auto;
+            position: relative; /* Biar z-index kontennya jalan */
+            z-index: 2; /* Di atas background, di bawah scanlines */
+        }
+        
+        .filepath-bar {
+            width: 100%;
+            background: #1a1a1a;
+            color: #f5f2e8;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            padding: 6px 12px;
+            font-size: 24px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        .filepath-bar .current-file { color: #00ff00; }
+        .filepath-bar .blinking-cursor {
+            color: #00ff00;
+            animation: cursor-blink 1s step-end infinite;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            background-color: #eee;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            margin: 0 auto 25px auto;
+            background-image: url('https://www.berro.my.id/agung.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .system-status {
+            background: #1a1a1a;
+            color: #f5f2e8;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            padding: 5px 15px;
+            font-size: 24px;
+            margin: 0 auto 25px auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .system-status .status-online { color: #00ff00; }
+        .system-status .status-light {
+            width: 14px;
+            height: 14px;
+            background-color: #00ff00;
+            border: 2px solid #005a00;
+            border-radius: 50%;
+            display: inline-block;
+            animation: fast-blink 1s linear infinite;
+        }
+        header h1 {
+            font-size: 64px;
+            margin: 0;
+            line-height: 1;
+        }
+        .typewriter-text {
+            display: inline-block;
+            font-size: 24px;
+            color: #444;
+            margin-top: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 4px solid #1a1a1a;
+            animation: typing 3.5s steps(26, end) forwards, 
+                        caret-blink .75s step-end infinite;
+        }
+
+        /* --- ABOUT ME --- */
+        .about-box {
+            background-color: #ffffff;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-sizing: border-box;
+        }
+        .about-box h2 {
+            font-size: 28px;
+            color: #000080;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .about-box p {
+            font-size: 22px;
+            color: #1a1a1a;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* --- MARQUEE --- */
+        .ticker {
+            width: 100%;
+            background: #1a1a1a;
+            color: #00ff00;
+            font-size: 24px;
+            padding: 8px 5px;
+            margin-bottom: 40px;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            box-sizing: border-box;
+        }
+        
+        /* --- KOTAK LINK (GRID) --- */
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .link-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border: 3px solid #1a1a1a;
+            padding: 20px;
+            min-height: 80px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-size: 28px;
+            text-align: center;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            transition: all 0.1s ease-in-out;
+        }
+        .link-box .icon {
+            margin-right: 15px;
+            color: #000080;
+            font-size: 24px;
+        }
+        .link-box:hover {
+            box-shadow: 3px 3px 0px #1a1a1a;
+            transform: translate(3px, 3px);
+            background-color: #fdfbe9;
+            animation: glitch 0.3s infinite;
+        }
+        .link-box:hover .icon { animation: glitch 0.3s reverse infinite; }
+        .link-box:active {
+            box-shadow: 0px 0px 0px #1a1a1a;
+            transform: translate(6px, 6px);
+            animation: none;
+        }
+
+        /* --- SOCIAL --- */
+        .section-title {
+            width: 100%;
+            background: #1a1a1a;
+            color: #00ff00;
+            font-size: 24px;
+            padding: 8px 5px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: 20px;
+        }
+        .social-link-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border: 3px solid #1a1a1a;
+            padding: 12px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-size: 22px;
+            text-align: center;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            transition: all 0.1s ease-in-out;
+        }
+        .social-link-box .icon {
+            margin-right: 10px;
+            color: #000080;
+            font-size: 20px;
+        }
+        .social-link-box:hover {
+            box-shadow: 3px 3px 0px #1a1a1a;
+            transform: translate(3px, 3px);
+            background-color: #fdfbe9;
+            animation: glitch 0.3s infinite;
+        }
+        .social-link-box:active {
+            box-shadow: 0px 0px 0px #1a1a1a;
+            transform: translate(6px, 6px);
+            animation: none; 
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            width: 100%;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 3px dashed #bbb;
+            font-size: 18px;
+            color: #888;
+        }
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        .visitor-counter {
+            background: #1a1a1a;
+            color: #ff0000;
+            padding: 5px 10px;
+            border: 2px solid #1a1a1a;
+            box-shadow: 3px 3px 0 #1a1a1a;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-left: auto;
+        }
+
+        /* --- [BARU] MUSIC PLAYER --- */
+        .music-player {
+            position: fixed;
+            bottom: 15px; /* Jarak dari bawah */
+            right: 15px;  /* Jarak dari kanan */
+            background: #1a1a1a;
+            color: #00ff00;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0px #1a1a1a;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 999;
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+
+            /* State Awal (Kecil) */
+            padding: 5px; /* Ini yang bikin kotak play kecil */
+            gap: 0;
+            border-radius: 5px; 
+        }
+
+        /* Sembunyikan elemen-elemen ini di awal */
+        .music-player span,
+        .music-player #mute-btn {
+            opacity: 0;
+            max-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+            margin-left: 0;
+        }
+
+        /* State ketika expanded */
+        .music-player.expanded {
+            padding: 10px 15px;
+            gap: 15px;
+            border-radius: 0;
+        }
+
+        .music-player.expanded span,
+        .music-player.expanded #mute-btn {
+            opacity: 1;
+            max-width: 300px;
+        }
+
+        /* Bungkus Tombol */
+        .music-player .controls {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            transition: gap 0.3s ease-in-out;
+        }
+        .music-player.expanded .controls {
+            gap: 15px;
+        }
+
+        /* Styling Tombol & Teks */
+        .music-player #track-name {
+            color: #f5f2e8;
+            font-weight: bold;
+        }
+        .music-player button {
+            background: none;
+            border: none;
+            color: #00ff00;
+            font-size: 20px;
+            padding: 0 5px;
+            cursor: pointer;
+        }
+        .music-player button:hover {
+            color: #f5f2e8;
+        }
+        
+        /* Tombol play/pause di awal lebih kecil */
+        .music-player #play-pause-btn {
+            font-size: 20px; /* Ini yang bikin ikon play kecil */
+        }
+
+
+        /* --- RESPONSIVE UNTUK HP --- */
+        @media (max-width: 600px) {
+            
+            .filepath-bar {
+                font-size: 18px;
+                padding: 5px 10px;
+                margin-bottom: 25px;
+            }
+            .links-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            header h1 { font-size: 48px; }
+            .system-status {
+                font-size: 20px;
+                gap: 8px;
+                padding: 4px 10px;
+            }
+            .system-status .status-light {
+                width: 12px;
+                height: 12px;
+            }
+            .typewriter-text {
+                font-size: 20px;
+                animation: none;
+                border-right: none;
+                width: auto;
+                white-space: normal;
+            }
+            .link-box { font-size: 24px; }
+            .footer-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            /* [BARU] Pindahin Visitor Counter di HP */
+            .visitor-counter {
+                margin-left: 0; /* Balikin ke tengah */
+            }
+
+            .section-title {
+                font-size: 20px;
+                margin-top: 40px;
+            }
+            .social-grid {
+                grid-template-columns: 1fr 1fr; 
+                gap: 15px;
+            }
+            .social-link-box {
+                font-size: 18px;
+                padding: 10px;
+            }
+            .social-link-box .icon {
+                font-size: 16px;
+                margin-right: 8px;
+            }
+            .about-box { margin-bottom: 30px; }
+            .about-box h2 { font-size: 24px; }
+            .about-box p { font-size: 18px; }
+        }
+
+    </style>
+</head>
 <body>
-    <!-- CRT Screen Effect -->
-    <div class="crt-overlay"></div>
+
     <div class="scanlines"></div>
 
-    <!-- Retro Terminal Style Header -->
-    <header class="retro-header">
-        <div class="terminal-bar">
-            <div class="terminal-controls">
-                <span class="control red"></span>
-                <span class="control yellow"></span>
-                <span class="control green"></span>
-            </div>
-            <div class="terminal-title">AGUNG@PORTFOLIO:~</div>
+    <div class="container">
+        
+        <div class="filepath-bar">
+            <span>ROOT@BERRO:~/</span><span class="current-file">index.html</span><span class="blinking-cursor">_</span>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="retro-main">
-        <!-- Desktop Navigation -->
-        <nav class="retro-nav desktop">
-            <ul>
-                <li><a href="#profile" class="active"><i class="fas fa-user"></i> <span>Profile</span></a></li>
-                <li><a href="#projects"><i class="fas fa-folder-open"></i> <span>Projects</span></a></li>
-                <li><a href="#achievements"><i class="fas fa-trophy"></i> <span>Achievements</span></a></li>
-                <li><a href="#skills"><i class="fas fa-code"></i> <span>Skills</span></a></li>
-                <li><a href="#contact"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
-            </ul>
-        </nav>
-
-        <!-- Content Sections -->
-        <div class="content-wrapper">
-            <!-- Profile Section -->
-            <section id="profile" class="content-section active">
-                <div class="retro-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-user"></i> PROFILE.TXT</h2>
-                        <div class="card-controls">
-                            <span class="control red"></span>
-                            <span class="control yellow"></span>
-                            <span class="control green"></span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="profile-grid">
-                            <div class="profile-pic">
-                                <div class="retro-avatar">
-                                    <img src="agung.png" alt="Profile Picture" class="pixelated">
-                                    <div class="avatar-frame"></div>
-                                    <div class="retro-status-light"></div>
-                                </div>
-                                <div class="retro-badges">
-                                    <span class="badge gold"><i class="fas fa-star"></i> PRO</span>
-                                    <span class="badge blue"><i class="fas fa-check"></i> VERIFIED</span>
-                                </div>
-                            </div>
-                            <div class="profile-info">
-                                <h3 class="retro-type terminal-title">> USER_PROFILE.EXE</h3>
-
-                                <div class="retro-terminal">
-                                    <div class="terminal-line">
-                                        <span class="prompt">></span>
-                                        <span class="command">NAME:</span>
-                                        <span class="output">AGUNG PRADANA</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">></span>
-                                        <span class="command">EXPERIENCE:</span>
-                                        <span class="output">ENTRY DATA PROCESSING</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">></span>
-                                        <span class="command">LOCATION:</span>
-                                        <span class="output">DUMAI , RIAU , INDONESIA</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">></span>
-                                        <span class="command">STATUS:</span>
-                                        <span class="output active">AVAILABLE</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">></span>
-                                        <span class="command">EXP:</span>
-                                        <span class="output">5+ YEARS</span>
-                                    </div>
-                                </div>
-
-                                <div class="retro-divider"></div>
-
-                                <div class="bio-section">
-                                    <h4 class="retro-heading"><i class="fas fa-terminal"></i> BIOGRAPHY:</h4>
-                                    <p class="retro-bio">
-                                        🖥️ Electronic Data Processing (EDP),
-                                        Seorang profesional di balik layar yang memastikan setiap angka penjualan
-                                        harian, mingguan, dan bulanan
-                                        tersaji tepat waktu dan akurat. Terbiasa bermain dengan data, server, dan
-                                        sistem, saya memastikan semua
-                                        berjalan mulus — mulai dari mesin kasir yang responsif, jaringan yang stabil,
-                                        hingga promo yang langsung
-                                        tayang di tempat.</p>
-                                </div>
-                                <div class="core-skills-section">
-                                    <h4 class="retro-heading"><i class="fas fa-cogs"></i> CORE SKILLS:</h4>
-                                    <ul class="retro-skills-list">
-                                        <li class="skill-item">💾
-                                            <span class="skill-text">Mengelola server dan mesin register adalah rutinitas</span>
-                                        </li>
-                                        <li class="skill-item">🌐
-                                            <span class="skill-text">Troubleshoot jaringan adalah keahlian</span></li>
-                                        <li class="skill-item">📊
-                                            <span class="skill-text">Menyajikan laporan penjualan adalah tanggung jawab</span>
-                                        </li>
-                                        <li class="skill-item">📥📤
-                                            <span class="skill-text">Upload dan download promo adalah detail yang tidak terlewatkan</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <p class="retro-type blink">> _</p>
-
-                                <div class="retro-divider"></div>
-
-                                <div class="stats-grid">
-                                    <div class="stat-item clickable-stat" data-target="projects">
-                                        <div class="stat-value">7</div>
-                                        <div class="stat-label">PROJECTS</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-value">100%</div>
-                                        <div class="stat-label">SATISFACTION</div>
-                                    </div>
-                                    <div class="stat-item">
-                                        <div class="stat-value">24/7</div>
-                                        <div class="stat-label">AVAILABILITY</div>
-                                    </div>
-                                </div>
-
-                                <div class="retro-divider"></div>
-
-                                <div class="signature-box">
-                                    <div class="signature-line"></div>
-                                    <div class="signature-text">DIGITAL_SIGNATURE</div>
-                                    <div class="signature-date">[CURRENT_DATE]</div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Projects Section -->
-            <section id="projects" class="content-section">
-                <div class="retro-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-folder-open"></i> PROJECTS.DIR</h2>
-                        <div class="card-controls">
-                            <span class="control red"></span>
-                            <span class="control yellow"></span>
-                            <span class="control green"></span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <!-- Project Filter Controls -->
-                        <div class="project-controls">
-                            <div class="retro-filter">
-                                <span class="filter-label">FILTER:</span>
-                                <button class="retro-btn filter-btn active" data-filter="all">ALL</button>
-                                <button class="retro-btn filter-btn" data-filter="web">WEB</button>
-                                <button class="retro-btn filter-btn" data-filter="data">DATA</button>
-                                <button class="retro-btn filter-btn" data-filter="robot">BOT</button>
-                            </div>
-                            <div class="retro-search">
-                                <input type="text" class="retro-input search-input" placeholder="SEARCH PROJECTS...">
-                                <button class="search-btn">Search</button>
-                            </div>
-                        </div>
-
-                        <!-- Projects Grid -->
-                        <div class="project-grid" id="project-list">
-                        </div>
-
-                        <!-- Project Pagination -->
-                        <div class="retro-pagination" style="display: none;"> <button class="retro-btn" id="prevBtn" disabled><i class="fas fa-angle-left"></i> Prev</button>
-                            <span class="page-info">Page 1 of 1</span>
-                            <button class="retro-btn" id="nextBtn">Next <i class="fas fa-angle-right"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Achievements Section -->
-            <section id="achievements" class="content-section">
-                <div class="retro-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-trophy"></i> ACHIEVEMENTS.EXE</h2>
-                        <div class="card-controls">
-                            <span class="control red"></span>
-                            <span class="control yellow"></span>
-                            <span class="control green"></span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="trophy-case" id="achievement-list">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Skills Section -->
-            <section id="skills" class="content-section">
-                <div class="retro-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-code"></i> SKILLS.DAT</h2>
-                        <div class="card-controls">
-                            <span class="control red"></span>
-                            <span class="control yellow"></span>
-                            <span class="control green"></span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="skills-container">
-                            <div class="skill-category">
-                                <h3>LANGUAGES</h3>
-                                <div class="skill-bars">
-                                    <div class="skill-bar">
-                                        <label>PHP</label>
-                                        <div class="bar-container">
-                                            <div class="bar-fill" style="width: 75%;" data-value="75%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-bar">
-                                        <label>HTML/CSS</label>
-                                        <div class="bar-container">
-                                            <div class="bar-fill" style="width: 80%;" data-value="80%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="skill-bar">
-                                        <label>Java Script</label>
-                                        <div class="bar-container">
-                                            <div class="bar-fill" style="width: 65%;" data-value="65%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="skills-container">
-                                <div class="skill-category">
-                                    <h3>HARD SKILL</h3>
-                                    <div class="skill-bars">
-                                        <div class="skill-bar">
-                                            <label>Excel</label>
-                                            <div class="bar-container">
-                                                <div class="bar-fill" style="width: 90%;" data-value="90%"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skill-bar">
-                                            <label>Word</label>
-                                            <div class="bar-container">
-                                                <div class="bar-fill" style="width: 85%;" data-value="85%"></div>
-                                            </div>
-                                        </div>
-                                        <div class="skill-bar">
-                                            <label>Power Point</label>
-                                            <div class="bar-container">
-                                                <div class="bar-fill" style="width: 60%;" data-value="60%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="skill-category">
-                                    <h3>FRAMEWORKS</h3>
-                                    <div class="skill-chips">
-                                        <span class="retro-chip">Tailwind CSS</span>
-                                        <span class="retro-chip">Bootstrap</span>
-                                        <span class="retro-chip">Laravel</span>
-                                        <span class="retro-chip">Django</span>
-                                        <span class="retro-chip">React</span>
-                                    </div>
-                                </div>
-                                <div class="skill-category">
-                                    <h3>TOOLS</h3>
-                                    <div class="tool-grid">
-                                        <div class="tool-item">
-                                            <i class="fab fa-git-alt"></i>
-                                            <span>Visual Studio Code</span>
-                                        </div>
-                                        <div class="tool-item">
-                                            <i class="fab fa-figma"></i>
-                                            <span>Sql Server Studio</span>
-                                        </div>
-                                        <div class="tool-item">
-                                            <i class="fas fa-terminal"></i>
-                                            <span>GitHub</span>
-                                        </div>
-                                        <div class="tool-item">
-                                            <i class="fas fa-server"></i>
-                                            <span>Figma</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </section>
-
-            <!-- Contact Section -->
-            <section id="contact" class="content-section">
-                <div class="retro-card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-envelope"></i> CONTACT.FRM</h2>
-                        <div class="card-controls">
-                            <span class="control red"></span>
-                            <span class="control yellow"></span>
-                            <span class="control green"></span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <form class="retro-form" id="contactForm">
-                            <div class="form-group floating-label">
-                                <input type="text" id="name" name="name" class="retro-input" placeholder=" " required>
-                                <label for="name">> NAME:</label>
-                            </div>
-                            <div class="form-group floating-label">
-                                <input type="email" id="email" name="email" class="retro-input" placeholder=" " required>
-                                <label for="email">> EMAIL:</label>
-                            </div>
-                            <div class="form-group floating-label">
-                                <input type="text" id="subject" name="subject" class="retro-input" placeholder=" " required>
-                                <label for="subject">> SUBJECT:</label>
-                            </div>
-                            <div class="form-group floating-label">
-                                <textarea id="message" name="message" class="retro-input" placeholder=" " required></textarea>
-                                <label for="message">> MESSAGE:</label>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="retro-btn primary">SEND</button>
-                                <button type="reset" class="retro-btn">CLEAR</button>
-                            </div>
-                        </form>
-                        <div class="social-links">
-                            <a href="https://github.com/iamberro" class="social-icon"><i class="fab fa-github"></i></a>
-                            <a href="https://www.linkedin.com/in/agung-pradana-284387262/"
-                                class="social-icon"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://x.com/agnprdn" class="social-icon"><i class="fab fa-twitter"></i></a>
-                            <a href="https://instagram.com/sir.berro"
-                                class="social-icon"><i class="fab fa-instagram"></i></a>
-                            <a href="https://facebook.com/ag.prd"
-                                class="social-icon"><i class="fab fa-facebook"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Project Preview Modal -->
-    <div id="projectModal" class="retro-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">PROJECT_PREVIEW.EXE</h3>
-                <div class="modal-controls">
-                    <span class="control red" id="closeModal"></span>
-                    <span class="control yellow"></span>
-                    <span class="control green"></span>
-                </div>
+        <header>
+            <div class="profile-pic"></div>
+            <div class="system-status">
+                <span>STATUS:</span>
+                <span class="status-online">ONLINE</span>
+                <span class="status-light"></span>
             </div>
-            <div class="modal-body">
-                <div class="project-preview-container">
-                    <!-- Main Image Column -->
-                    <div class="preview-main-image">
-                        <img id="mainPreviewImage" src="" alt="Project Preview">
-                    </div>
+            <h1>BERRO</h1>
+            <p class="typewriter-text">Welcome to my digital hub.</p>
+        </header>
 
-                    <!-- Description Column -->
-                    <div class="preview-description">
-                        <h4 id="projectTitle">Project Title</h4>
-                        <div class="project-meta">
-                            <span class="project-category" id="projectCategory">Web</span>
-                            <span class="project-date" id="projectDate">2023</span>
-                        </div>
-                        <p id="projectFullDescription">Full project description goes here...</p>
-                        <div class="project-tech-stack">
-                            <h5>TECH STACK:</h5>
-                            <div class="tech-tags" id="projectTechTags"></div>
-                        </div>
-                        <div class="project-actions">
-                            <button class="retro-btn primary"><i class="fas fa-external-link-alt"></i> Live Demo</button>
-                            <button class="retro-btn secondary"><i class="fab fa-github"></i> View Code</button>
-                        </div>
-                    </div>
-                </div>
+        <div class="about-box">
+            <h2>[ ABOUT_ME ]</h2>
+            <p>
+                Halo! Saya seorang EDP (Entry Data Processing). Di luar pekerjaan, saya hobi mengelola VPS, web development (PHP), dan hal-hal teknis lainnya. Selamat datang di hub digital saya!
+            </p>
+        </div>
+        
+        <div class="ticker">
+            <marquee behavior="scroll" direction="left" scrollamount="6">
+                +++ Welcome +++ Accessing berro.my.id services +++ All systems online +++ Have a nice day! +++
+            </marquee>
+        </div>
 
-                <!-- Thumbnail Navigation -->
-                <div class="preview-thumbnails">
-                    <div class="thumbnails-container">
-                        <!-- Thumbnails will be added dynamically -->
-                    </div>
-                </div>
-                <!-- Mobile Close Button -->
-                <div class="mobile-close-btn">
-                    <button class="retro-btn" id="mobileCloseModal">
-                <i class="fas fa-times"></i> CLOSE PREVIEW
+        <main class="links-grid">
+            
+            <a href="https://berro.my.id" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[ > ]</span> PORTFOLIO
+            </a>
+            <a href="https://store.berro.my.id" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[ $ ]</span> STORE
+            </a>
+            <a href="https://wa.me/6281371930358" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[ # ]</span> WHATSAPP BOT
+            </a>
+            <a href="https://t.me/berrontosaurusbot" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[>_]</span> TELEGRAM BOT
+            </a>
+            <a href="https://web.berro.my.id" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[ ~ ]</span> WEB PROXY
+            </a>
+            <a href="https://wa.berro.my.id" class="link-box" target="_blank" rel="noopener noreferrer">
+                <span class="icon">[...]</span> 2ND WEB PROXY
+            </a>
+
+        </main>
+
+        <div class="section-title">
+            <span>[ CONNECT WITH ME ]</span>
+        </div>
+        
+        <div class="social-grid">
+            
+            <a href="https://wa.me/6281371930358" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-whatsapp"></i> WHATSAPP
+            </a>
+            <a href="https://github.com/iamberro" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-github"></i> GITHUB
+            </a>
+            <a href="https://www.linkedin.com/in/agung-pradana-284387262/" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-linkedin"></i> LINKEDIN
+            </a>
+            <a href="https://facebook.com/sirberro" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-facebook"></i> FACEBOOK
+            </a>
+            <a href="https://instagram.com/sir.berro" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-instagram"></i> INSTAGRAM
+            </a>
+            <a href="https://x.com/sirberro" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-x-twitter"></i> TWITTER/X
+            </a>
+            <a href="https://tiktok.com/@sir.berro" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-tiktok"></i> TIKTOK
+            </a>
+            <a href="https://t.me/@berrontosaurus" class="social-link-box" target="_blank" rel="noopener noreferrer">
+                <i class="icon fab fa-telegram"></i> TELEGRAM
+            </a>
+            
+        </div>
+
+        <div class="music-player">
+            <span>NOW PLAYING:</span>
+            <span id="track-name">8-Bit Adventure</span>
+            
+            <div class="controls">
+                <button id="play-pause-btn" title="Play/Pause">
+                    <i class="fas fa-play"></i>
                 </button>
-                </div>
+                <button id="mute-btn" title="Mute/Unmute">
+                    <i class="fas fa-volume-up"></i>
+                </button>
             </div>
         </div>
+
+        <footer>
+            <div class="footer-container">
+                <div class="last-updated-info">
+                    SYSTEM TIME: <span id="last-updated">loading...</span>
+                </div>
+                <div class="last-updated-info">
+                    CLIENT_IP: <span id="client-ip">...</span>
+                </div>
+                <div class="last-updated-info">
+                    SESSION_ID: <span id="session-id">...</span>
+                </div>
+                <div class="visitor-counter">
+                    VISITOR: 
+                    <span id="visitor-count">999</span><span id="last-digit">0</span>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 20px;">&copy; 2025 berro.my.id</p>
+        </footer>
+
     </div>
+    
+    <audio id="background-music" src="background.mp3" loop></audio>
 
-    <div class="music-control floating">
-        <button id="musicToggle" class="retro-btn">
-            <i class="fas fa-volume-mute"></i>
-        </button>
-    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Set Info Waktu & Terminal
+            try {
+                const now = new Date();
+                const options = { 
+                    year: 'numeric', month: 'short', day: 'numeric', 
+                    hour: '2-digit', minute: '2-digit' 
+                };
+                document.getElementById('last-updated').textContent = now.toLocaleString('id-ID', options);
+            } catch (e) {
+                document.getElementById('last-updated').textContent = 'N/A';
+            }
+            
+            try {
+                const ipPart1 = Math.floor(Math.random() * 254) + 1;
+                const ipPart2 = Math.floor(Math.random() * 254) + 1;
+                document.getElementById('client-ip').textContent = `103.88.${ipPart1}.${ipPart2}`;
+                
+                const sess1 = Math.random().toString(16).substr(2, 4).toUpperCase();
+                const sess2 = Math.random().toString(16).substr(2, 4).toUpperCase();
+                document.getElementById('session-id').textContent = `${sess1}-${sess2}`;
+                
+            } catch (e) {
+                document.getElementById('client-ip').textContent = 'N/A';
+                document.getElementById('session-id').textContent = 'N/A';
+            }
 
-    <audio id="bgMusic" loop>
-        <source src="background.mp3" type="audio/mpeg">
-        <source src="fallback-audio.mp3" type="audio/mpeg">
-    </audio>
+            // 2. Animasi "Visitor Counter"
+            const lastDigit = document.getElementById('last-digit');
+            if (lastDigit) {
+                setInterval(function() {
+                    const randomNum = Math.floor(Math.random() * 10);
+                    lastDigit.textContent = randomNum;
+                }, 300);
+            }
+            
+            // --- [BARU] KONTROL MUSIC PLAYER ---
+            try {
+                const musicPlayer = document.querySelector('.music-player');
+                const audio = document.getElementById('background-music');
+                const playPauseBtn = document.getElementById('play-pause-btn');
+                const muteBtn = document.getElementById('mute-btn');
+                const playIcon = playPauseBtn.querySelector('i');
+                const muteIcon = muteBtn.querySelector('i');
 
-    <!-- Mobile Navigation -->
-    <nav class="retro-nav mobile">
-        <ul>
-            <li><a href="#profile" class="active"><i class="fas fa-user"></i> <span>Profile</span></a></li>
-            <li><a href="#projects"><i class="fas fa-folder-open"></i> <span>Projects</span></a></li>
-            <li><a href="#achievements"><i class="fas fa-trophy"></i> <span>Achievements</span></a></li>
-            <li><a href="#skills"><i class="fas fa-code"></i> <span>Skills</span></a></li>
-            <li><a href="#contact"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
-        </ul>
-    </nav>
+                // Fungsi Play/Pause
+                playPauseBtn.addEventListener('click', function() {
+                    if (audio.paused) {
+                        audio.play();
+                        playIcon.className = 'fas fa-pause';
+                        musicPlayer.classList.add('expanded'); // Tambah class
+                    } else {
+                        audio.pause();
+                        playIcon.className = 'fas fa-play';
+                        musicPlayer.classList.remove('expanded'); // [DIUBAH] Hapus class-nya
+                    }
+                });
 
-    <!-- Retro Console Footer -->
-    <footer class="retro-footer">
-        <div class="console-line">
-            <span class="prompt">C:agung\portfolio></span>
-            <span class="command">website_loaded_successfully</span>
-            <span class="cursor blink">_</span>
-        </div>
-    </footer>
+                // Fungsi Mute/Unmute
+                muteBtn.addEventListener('click', function() {
+                    if (audio.muted) {
+                        audio.muted = false;
+                        muteIcon.className = 'fas fa-volume-up';
+                    } else {
+                        audio.muted = true;
+                        muteIcon.className = 'fas fa-volume-mute';
+                    }
+                });
+                
+                // Info: Browser modern melarang autoplay. 
+                // Musik baru akan main setelah user klik tombol play.
+                
+            } catch(e) {
+                console.error("Music player error:", e);
+                // Sembunyikan player jika error
+                document.querySelector('.music-player').style.display = 'none';
+            }
 
-    <script src="script.js"></script>
-</body>
-
-
+        });
+    </script>
+    </body>
 </html>
