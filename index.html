@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Berro's</title>
-    
+    <meta property="og:title" content="Agung Pradana">
+    <meta property="og:description" content="Portofolio, Proyek, dan Kontak Agung.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://berro.my.id"> 
+    <meta property="og:image" content="https://www.berro.my.id/agung.png"> <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Agung Pradana">
+    <meta name="twitter:description" content="Portofolio, Proyek, dan Kontak Agung.">
+    <meta name="twitter:image" content="https://www.berro.my.id/agung.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -45,14 +52,14 @@
         /* [BARU] Animasi untuk Scanlines */
         @keyframes scanline-move {
             0% { background-position: 0 0; }
-            100% { background-position: 0 4px; } /* Bergerak 1 pola (4px) */
+            100% { background-position: 0 4px; }
         }
 
 
         /* --- Reset & Setup Dasar --- */
         body {
             font-family: 'VT323', monospace;
-            background-color: #f5f2e8; /* Latar krem */
+            background-color: #f5f2e8;
             color: #1a1a1a;
             background-image: radial-gradient(#dcdcdc 1.5px, transparent 1.5px);
             background-size: 20px 20px;
@@ -76,14 +83,14 @@
             background: repeating-linear-gradient(
                 to bottom,
                 transparent 0,
-                rgba(0, 0, 0, 0.15) 1px, /* Garis gelap */
+                rgba(0, 0, 0, 0.15) 1px,
                 transparent 2px,
                 transparent 3px
             );
-            background-size: 100% 4px; /* Pola berulang setiap 4px */
-            z-index: 998; /* Di bawah player, di atas konten */
-            pointer-events: none; /* PENTING: Biar bisa klik tembus */
-            animation: scanline-move 8s linear infinite; /* Animasi gerak pelan */
+            background-size: 100% 4px;
+            z-index: 998;
+            pointer-events: none;
+            animation: scanline-move 8s linear infinite;
         }
 
         /* Kontainer Utama */
@@ -91,8 +98,8 @@
             width: 100%;
             max-width: 700px;
             margin: 20px auto;
-            position: relative; /* Biar z-index kontennya jalan */
-            z-index: 2; /* Di atas background, di bawah scanlines */
+            position: relative;
+            z-index: 2;
         }
         
         .filepath-bar {
@@ -111,6 +118,34 @@
         .filepath-bar .blinking-cursor {
             color: #00ff00;
             animation: cursor-blink 1s step-end infinite;
+        }
+
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #00ff00;
+            font-size: 28px;
+            letter-spacing: 2px;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+        
+        .preloader .blinking-cursor {
+            color: #00ff00;
+            animation: cursor-blink 1s step-end infinite;
+        }
+
+        
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
         /* --- HEADER --- */
@@ -324,8 +359,8 @@
         /* --- [BARU] MUSIC PLAYER --- */
         .music-player {
             position: fixed;
-            bottom: 15px; /* Jarak dari bawah */
-            right: 15px;  /* Jarak dari kanan */
+            bottom: 15px;
+            right: 15px;
             background: #1a1a1a;
             color: #00ff00;
             border: 3px solid #1a1a1a;
@@ -338,7 +373,7 @@
             overflow: hidden;
 
             /* State Awal (Kecil) */
-            padding: 5px; /* Ini yang bikin kotak play kecil */
+            padding: 5px;
             gap: 0;
             border-radius: 5px; 
         }
@@ -397,7 +432,29 @@
         
         /* Tombol play/pause di awal lebih kecil */
         .music-player #play-pause-btn {
-            font-size: 20px; /* Ini yang bikin ikon play kecil */
+            font-size: 20px;
+        }
+
+        .skills-container {
+            margin-top: 25px;
+            border-top: 3px dashed #bbb;
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .skill-item {
+            margin-bottom: 12px;
+            font-size: 22px;
+            flex-basis: 48%;
+        }
+        .skill-item .skill-label {
+            color: #1a1a1a;
+            display: inline-block;
+            width: 140px;
+        }
+        .skill-item .skill-bar {
+            color: #000080;
         }
 
 
@@ -410,8 +467,19 @@
                 margin-bottom: 25px;
             }
             .links-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            .link-box {
+                font-size: 18px;
+                flex-direction: column;
+                padding: 15px;
+                min-height: 60px;
+                gap: 5px;
+            }
+            .link-box .icon {
+                margin-right: 0;
+                font-size: 20px;
             }
             header h1 { font-size: 48px; }
             .system-status {
@@ -430,15 +498,14 @@
                 width: auto;
                 white-space: normal;
             }
-            .link-box { font-size: 24px; }
             .footer-container {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
-            /* [BARU] Pindahin Visitor Counter di HP */
+            
             .visitor-counter {
-                margin-left: 0; /* Balikin ke tengah */
+                margin-left: 0;
             }
 
             .section-title {
@@ -457,6 +524,17 @@
                 font-size: 16px;
                 margin-right: 8px;
             }
+            .skills-container {
+                flex-direction: column;
+            }
+            .skill-item {
+                flex-basis: 100%;
+                font-size: 18px; 
+                margin-bottom: 10px;
+            }
+            .skill-item .skill-label {
+                width: 110px;
+            }
             .about-box { margin-bottom: 30px; }
             .about-box h2 { font-size: 24px; }
             .about-box p { font-size: 18px; }
@@ -465,6 +543,11 @@
     </style>
 </head>
 <body>
+
+    <div class="preloader">
+        <span>[ SYSTEM BOOTING... ]</span>
+        <span class="blinking-cursor">_</span>
+    </div>
 
     <div class="scanlines"></div>
 
@@ -488,8 +571,26 @@
         <div class="about-box">
             <h2>[ ABOUT_ME ]</h2>
             <p>
-                Halo! Saya seorang EDP (Entry Data Processing). Di luar pekerjaan, saya hobi mengelola VPS, web development, dan hal-hal teknis lainnya. Selamat datang di hub digital saya!
+                Halo! Saya seorang EDP (Entry Data Processing). Di luar pekerjaan, saya hobi mengelola VPS, web development (PHP), dan hal-hal teknis lainnya. Selamat datang di hub digital saya!
             </p>
+            <div class="skills-container">
+                <div class="skill-item">
+                    <span class="skill-label">DATA ENTRY</span>
+                    <span class="skill-bar">[■■■■■■■■■□]</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-label">ADMINISTRASI</span>
+                    <span class="skill-bar">[■■■■■■■■□□]</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-label">VPS / LINUX</span>
+                    <span class="skill-bar">[■■■■■■□□□□]</span>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-label">PHP / WEB</span>
+                    <span class="skill-bar">[■■■■□□□□□□]</span>
+                </div>
+            </div>
         </div>
         
         <div class="ticker">
@@ -594,6 +695,12 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const loader = document.querySelector('.preloader');
+            // Sembunyikan setelah 1.5 detik (sesuaikan kalau mau)
+            setTimeout(function() {
+                loader.classList.add('hidden');
+            }, 1500);
             
             // 1. Set Info Waktu & Terminal
             try {
@@ -610,7 +717,7 @@
             try {
                 const ipPart1 = Math.floor(Math.random() * 254) + 1;
                 const ipPart2 = Math.floor(Math.random() * 254) + 1;
-                document.getElementById('client-ip').textContent = `103.88.${ipPart1}.${ipPart2}`;
+                document.getElementById('client-ip').textContent = `192.168.${ipPart1}.${ipPart2}`;
                 
                 const sess1 = Math.random().toString(16).substr(2, 4).toUpperCase();
                 const sess2 = Math.random().toString(16).substr(2, 4).toUpperCase();
@@ -630,7 +737,7 @@
                 }, 300);
             }
             
-            // --- [BARU] KONTROL MUSIC PLAYER ---
+            // --- KONTROL MUSIC PLAYER ---
             try {
                 const musicPlayer = document.querySelector('.music-player');
                 const audio = document.getElementById('background-music');
@@ -644,11 +751,11 @@
                     if (audio.paused) {
                         audio.play();
                         playIcon.className = 'fas fa-pause';
-                        musicPlayer.classList.add('expanded'); // Tambah class
+                        musicPlayer.classList.add('expanded');
                     } else {
                         audio.pause();
                         playIcon.className = 'fas fa-play';
-                        musicPlayer.classList.remove('expanded'); // [DIUBAH] Hapus class-nya
+                        musicPlayer.classList.remove('expanded');
                     }
                 });
 
@@ -675,5 +782,4 @@
         });
     </script>
     </body>
-
 </html>
